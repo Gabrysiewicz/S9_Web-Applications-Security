@@ -1,8 +1,8 @@
 <table align='center'>
-  <tr> <td colspan='3'> <img width="884px" > </td> </tr>
+  <tr> <td colspan='3'> Web Applications Security </td> </tr>
   <tr> <td colspan="3" align='center'> <img src='https://github.com/Gabrysiewicz/Programowanie-aplikacji-w-chmurze-obliczeniowe/blob/main/logo_politechniki_lubelskiej.jpg' width="400px" height="400px"></td> </tr>
   <tr> <td> Kamil Gabrysiewicz </td> <td> Index: 95400 </td> <td> Grupa: 2.1 </td> </tr>  
-  <tr> <td> Semestr 2 </td> <td colspan='2' align='center'> Web Applications Security </td> </tr>  
+  <tr> <td> Wtorek 11:45-13:15 </td> <td align='center'> Semestr 2 </td> <td>Laboratorium 1</td></tr>  
 </table>
 
 <h1> Tasks to do: </h1>
@@ -20,7 +20,7 @@
       
 
 ### Outcome: Application is running
-<img src='https://github.com/Gabrysiewicz/Programowanie-aplikacji-w-chmurze-obliczeniowe/blob/main/logo_politechniki_lubelskiej.jpg' width="600px" height="600px">
+![application](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ApplicationIsRunning.png)
       
          
 ## 2. Run ZAP application and use it to test web application installed in point 1 of this instruction:
@@ -30,7 +30,7 @@
    4. Start verification by clicking Attack button
 
 ### Outcome: Zap is scanning the application
-<img src='https://github.com/Gabrysiewicz/Programowanie-aplikacji-w-chmurze-obliczeniowe/blob/main/logo_politechniki_lubelskiej.jpg' width="600px" height="600px">
+![zap](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ZapIsScanning.png)
 
 
 ## 3. Analyse obtained results. Please create a report containing the list of found vulnerabilities. Analyse the fixes proposed by ZAP program and propose a solution to each of found vulnerabilities on the base of information from ZAP program and the Internet.
