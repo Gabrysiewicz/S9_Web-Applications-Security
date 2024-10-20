@@ -34,6 +34,6 @@
 
 
 ## 3. Analyse obtained results. Please create a report containing the list of found vulnerabilities. Analyse the fixes proposed by ZAP program and propose a solution to each of found vulnerabilities on the base of information from ZAP program and the Internet.
+![zap alert output](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ZapResultAlerts.png)
 
-   
 ## 4. Use ZAP program to verify your own application. Use an application you’ve already created. Put the analysis in the report. 
