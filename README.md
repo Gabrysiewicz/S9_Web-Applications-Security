@@ -45,6 +45,7 @@
 ![zap alert output](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ZapRaportAlerts.png)
 
 </div>
+
 Detected alerts:
 - SQL Injection - MySQL (1)
   - Possibility of SQL Injection has been found in the application by ZAP.
