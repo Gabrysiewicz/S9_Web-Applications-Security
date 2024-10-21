@@ -74,4 +74,4 @@ The app is built with `Laravel` with the use of `docker` containers.
 There were no error results from ZAP, it's probably due to the use of a framework that resolves many security issues, but nevertheless there was an alert:
 - .htaccess Information Leak (1)
   - htaccess files can be used to alter the configuration of the Apache Web Server software to enable/disable additional functionality and features that the Apache Web Server software has to offer.
-  - Ensure the .htaccess file is not accessible. It can be achived eitherway by correct ownership of a file `chown 644 or 755` for .htaccess or by midifying the httpd.conf for apache server.
+  - Ensure that the .htaccess file is not accessible. This can be achieved either way by setting the correct file ownership `chown 644 or 755 for .htaccess` or by modifying the `httpd.conf` file for the Apache server.
