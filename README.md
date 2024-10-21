@@ -34,6 +34,30 @@
 
 
 ## 3. Analyse obtained results. Please create a report containing the list of found vulnerabilities. Analyse the fixes proposed by ZAP program and propose a solution to each of found vulnerabilities on the base of information from ZAP program and the Internet.
-![zap alert output](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ZapResultAlerts.png)
+![zap alert output](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ZapRaportAlerts.png)
+
+Detected alerts:
+- SQL Injection - MySQL (1)
+  - Possibility of SQL Injection has been found in the application by ZAP.
+  - The suggestion from ZAP is to never trust the client and client-side validation, there should be server-side validation to prevent unwanted and harming SQL Queries.
+- Buffer overflow (1)
+  - These errors end execution of the application in an unexpected way.
+  - Rewrite the background program using proper return length checking. This will require a recompile of the background executable. 
+- GET for POST (1)
+  - It may facilitate simplification of other attacks. For example if the original POST is subject to Cross-Site Scripting (XSS), then this finding may indicate that a simplified (GET based) XSS may also be possible.
+  - Ensure that only POST is accepted where POST is expected.
+- User Agent Fuzzer (1)
+  - Check for differences in response based on fuzzed User Agent. Compares the response statuscode and the hashcode of the response body with the original response.
+  - Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)
 
 ## 4. Use ZAP program to verify your own application. Use an application you’ve already created. Put the analysis in the report. 
+I have used one of my applications for subject "IT System integrations" that was supposed to be a `Summary of statistical data on games on Steam and Epic Games Store platforms`.
+The app is built with `Laravel` with the use of `docker` containers.
+![MyApp](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab1/MyApplication.png)
+
+![Zap for my App](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab1/MyAppZapScreen.png)
+
+There were no error results from ZAP, it's probably due to the use of a framework that resolves many security issues, but nevertheless there was an alert:
+- .htaccess Information Leak (1)
+  - htaccess files can be used to alter the configuration of the Apache Web Server software to enable/disable additional functionality and features that the Apache Web Server software has to offer.
+  - Ensure the .htaccess file is not accessible. It can be achived eitherway by correct ownership of a file `chown 644 or 755` for .htaccess or by midifying the httpd.conf for apache server.
