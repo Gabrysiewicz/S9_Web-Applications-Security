@@ -20,8 +20,11 @@
       
 
 ### Outcome: Application is running
-![application](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ApplicationIsRunning.png)
-      
+<div align='center'>
+
+  ![application](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ApplicationIsRunning.png)
+
+</div>
          
 ## 2. Run ZAP application and use it to test web application installed in point 1 of this instruction:
    1. Start ZAP application
@@ -30,12 +33,18 @@
    4. Start verification by clicking Attack button
 
 ### Outcome: Zap is scanning the application
+<div align='center'>
+
 ![zap](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ZapIsScanning.png)
 
+</div>
 
 ## 3. Analyse obtained results. Please create a report containing the list of found vulnerabilities. Analyse the fixes proposed by ZAP program and propose a solution to each of found vulnerabilities on the base of information from ZAP program and the Internet.
+<div align='center'>
+
 ![zap alert output](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ZapRaportAlerts.png)
 
+</div>
 Detected alerts:
 - SQL Injection - MySQL (1)
   - Possibility of SQL Injection has been found in the application by ZAP.
@@ -55,7 +64,11 @@ I have used one of my applications for subject "IT System integrations" that was
 The app is built with `Laravel` with the use of `docker` containers.
 ![MyApp](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab1/MyApplication.png)
 
+<div align='center'>
+
 ![Zap for my App](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab1/MyAppZapScreen.png)
+
+</div>
 
 There were no error results from ZAP, it's probably due to the use of a framework that resolves many security issues, but nevertheless there was an alert:
 - .htaccess Information Leak (1)
