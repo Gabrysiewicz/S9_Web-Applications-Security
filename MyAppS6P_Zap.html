@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyAppS6P</title>
+<link
+	href="MyAppS6P_Zap/normalize/normalize.css" rel="stylesheet">
+<link
+	href="MyAppS6P_Zap/themes/original/main.css" rel="stylesheet">
+<link
+	href="MyAppS6P_Zap/themes/original/colors.css" rel="stylesheet">
+</head>
+<body>
+	<header>
+		<h1>MyAppS6P</h1>
+		<p>
+			<span>Generated with</span> <a href="https://zaproxy.org"><img
+				src="MyAppS6P_Zap/zap32x32.png" alt="The ZAP logo" class="zap-logo">ZAP</a>
+			<span>on Mon 21 Oct 2024, at 16:15:33</span>
+		</p>
+		<p>ZAP Version: 2.15.0</p>
+		<p>
+			ZAP by <a href="https://checkmarx.com/">Checkmarx</a>
+		</p>
+	</header>
+
+	<main>
+
+		<section id="contents" class="contents">
+			<h2>Contents</h2>
+			<nav>
+				<ol>
+					<li><a
+						href="#about-this-report">About this report</a>
+						<ol>
+							
+							<li><a
+								href="#report-parameters">Report parameters</a></li>
+						</ol></li>
+					<data-th-block>
+					<li><a
+						href="#summaries">Summaries</a>
+						<ol>
+							<li><a
+								href="#risk-confidence-counts">Alert counts by risk and confidence</a></li>
+							<li><a
+								href="#site-risk-counts">Alert counts by site and risk</a></li>
+							<li><a
+								href="#alert-type-counts">Alert counts by alert type</a></li>
+						</ol></li>
+					<li><a
+						href="#alerts">Alerts</a>
+						<ol>
+							
+							 
+							
+							
+							
+							
+							
+							
+							<li><a
+								href="#alerts--risk-2-confidence-2"><span>Risk</span>=<span
+									class="risk-level">Medium</span>, <span>Confidence</span>=<span
+									class="confidence-level">Medium</span> <span>(1)</span></a></li>
+							
+							
+							  
+							 
+							 
+						</ol></li>
+					<li><a
+						href="#appendix">Appendix</a>
+						<ol>
+							<li><a
+								href="#alert-types">Alert types</a></li>
+						</ol></li>
+					</data-th-block>
+				</ol>
+			</nav>
+		</section>
+
+		<section
+			id="about-this-report" class="about-this-report">
+			<h2>About this report</h2>
+
+			
+
+			<section
+				id="report-parameters">
+				<h3>Report parameters</h3>
+				<div class="report-parameters--container">
+					<h4>Contexts</h4>
+					
+					
+					<p>No contexts were selected, so all contexts were included by default.</p>
+					  
+
+					<h4>Sites</h4>
+					
+					<p>The following sites were included:</p>
+					<ul class="sites-list">
+						<li><span class="site">http://localhost:8000</span></li>
+					</ul>
+					
+					<p>(If no sites were selected, all sites were included by default.)</p>
+					<p>An included site must also be within one of the included contexts for its data to be included in the report.</p>
+
+					<h4>Risk levels</h4>
+					<p>
+						<span>Included</span>:
+						 
+						<span class="included-risk-codes"><span class="risk-level">High</span>, <span class="risk-level">Medium</span>, <span class="risk-level">Low</span>, <span class="risk-level">Informational</span></span>
+					</p>
+					<p>
+						<span>Excluded</span>:
+						 <span>None</span>
+						
+					</p>
+
+					<h4>Confidence levels</h4>
+					<p>
+						<span>Included</span>:
+						
+						
+						<span class="included-confidence-codes"><span class="confidence-level">User Confirmed</span>, <span class="confidence-level">High</span>, <span class="confidence-level">Medium</span>, <span class="confidence-level">Low</span></span>
+					</p>
+					<p>
+						<span>Excluded</span>:
+						
+						
+						<span class="included-confidence-codes"> <span class="confidence-level">User Confirmed</span>, <span class="confidence-level">High</span>, <span class="confidence-level">Medium</span>, <span class="confidence-level">Low</span>, <span class="confidence-level">False Positive</span></span>
+					</p>
+				</div>
+			</section>
+		</section>
+
+		
+		<section>
+			
+		</section>
+		
+		<section id="summaries" class="summaries">
+			<h2>Summaries</h2>
+
+			<section
+				id="risk-confidence-counts">
+				<h3>Alert counts by risk and confidence</h3>
+				<table class="risk-confidence-counts-table">
+					<caption>
+						<p>This table shows the number of alerts for each level of risk and confidence included in the report.</p>
+						<p>(The percentages in brackets represent the count as a percentage of the total number of alerts included in the report, rounded to one decimal place.)</p>
+					</caption>
+					<colgroup>
+						<col>
+						<col>
+					</colgroup>
+					<colgroup>
+						<col
+							style="width: 14.0%"><col
+							style="width: 14.0%"><col
+							style="width: 14.0%"><col
+							style="width: 14.0%">
+						<col style="width: 14.0%">
+					</colgroup>
+					<thead>
+						<tr>
+							<td colspan="2" rowspan="2"></td>
+							<th scope="colgroup"
+								colspan="5">Confidence</th>
+						</tr>
+						<tr>
+							<th scope="col">User Confirmed</th>
+							<th scope="col">High</th>
+							<th scope="col">Medium</th>
+							<th scope="col">Low</th>
+							<th scope="col">Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th scope="rowgroup"
+								rowspan="5">Risk</th>
+							<th scope="row">High</th>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span class="additional-info-percentages">(0.0%)</span></td>
+						</tr>
+						<tr>
+							
+							<th scope="row">Medium</th>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>1</span><br> <span
+								class="additional-info-percentages">(100.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>1</span><br> <span class="additional-info-percentages">(100.0%)</span></td>
+						</tr>
+						<tr>
+							
+							<th scope="row">Low</th>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span class="additional-info-percentages">(0.0%)</span></td>
+						</tr>
+						<tr>
+							
+							<th scope="row">Informational</th>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span class="additional-info-percentages">(0.0%)</span></td>
+						</tr>
+						<tr>
+							<th scope="row">Total</th>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>1</span><br> <span
+								class="additional-info-percentages">(100.0%)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0.0%)</span></td>
+							<td><span>1</span><br> <span
+								class="additional-info-percentages">(100%)</span></td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+
+			<section
+				id="site-risk-counts">
+				<h3>Alert counts by site and risk</h3>
+				<table class="site-risk-counts-table">
+					<caption>
+						<p>This table shows, for each site for which one or more alerts were raised, the number of alerts raised at each risk level.</p>
+						<p>Alerts with a confidence level of &quot;False Positive&quot; have been excluded from these counts.</p>
+						<p>(The numbers in brackets are the number of alerts raised for the site at or above that risk level.)</p>
+					</caption>
+					<colgroup>
+						<col>
+						<col>
+					</colgroup>
+					<colgroup>
+						<col
+							style="width: 16.25%"><col
+							style="width: 16.25%"><col
+							style="width: 16.25%"><col
+							style="width: 16.25%">
+					</colgroup>
+					<thead>
+						<tr>
+							<td colspan="2" rowspan="2"></td>
+							<th scope="colgroup" colspan="4">Risk</th>
+						</tr>
+						<tr>
+							<th scope="col">
+								<span>High</span><br>  <span
+									class="additional-info-percentages">(= High)</span>  
+							</th>
+							<th scope="col">
+								<span>Medium</span><br>   <span
+									class="additional-info-percentages">(&gt;= Medium)</span> 
+							</th>
+							<th scope="col">
+								<span>Low</span><br>   <span
+									class="additional-info-percentages">(&gt;= Low)</span> 
+							</th>
+							<th scope="col">
+								<span>Informational</span><br>   <span
+									class="additional-info-percentages">(&gt;= Informational)</span> 
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th scope="rowgroup"
+								rowspan="1">Site</th>
+							<th scope="row">http://localhost:8000</th>
+							
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(0)</span></td>
+							<td><span>1</span><br> <span
+								class="additional-info-percentages">(1)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(1)</span></td>
+							<td><span>0</span><br> <span
+								class="additional-info-percentages">(1)</span></td>
+							
+						</tr>
+					</tbody>
+				</table>
+			</section>
+
+			<section
+				id="alert-type-counts">
+				<h3>Alert counts by alert type</h3>
+				<table class="alert-type-counts-table">
+					<caption>
+						<p>This table shows the number of alerts of each alert type, together with the alert type&#39;s risk level.</p>
+						<p>(The percentages in brackets represent each count as a percentage, rounded to one decimal place, of the total number of alerts included in this report.)</p>
+					</caption>
+					<thead>
+						<tr>
+							<th scope="col">Alert type</th>
+							<th scope="col">Risk</th>
+							<th scope="col">Count</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th scope="row"><a
+								href="#alert-type-0">.htaccess Information Leak</a></th>
+							<td class="risk-level">Medium</td>
+							<td><span>1</span><br> <span
+								class="additional-info-percentages">(100.0%)</span></td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<th scope="row">Total</th>
+							<td></td>
+							<td>1</td>
+						</tr>
+					</tfoot>
+				</table>
+			</section>
+		</section>
+
+		<section id="alerts" class="alerts">
+			<h2>Alerts</h2>
+			<ol>
+				
+				 
+				 
+				
+				
+				
+				
+				<li id="alerts--risk-2-confidence-2">
+					<h3>
+						<span>Risk</span>=<span
+							class="risk-level">Medium</span>, <span>Confidence</span>=<span
+							class="confidence-level">Medium</span> <span>(1)</span>
+					</h3>
+					<ol>
+						
+						<li class="alerts--site-li">
+							<h4>
+								<span class="site">http://localhost:8000</span> <span>(1)</span>
+							</h4>
+							<ol>
+								
+								<li>
+									<h5>
+										<a
+											href="#alert-type-0">.htaccess Information Leak</a> <span>(1)</span>
+									</h5>
+									<ol>
+										<li><details>
+												<summary>
+													<span class="request-method-n-url">GET http://localhost:8000/.htaccess</span>
+												</summary>
+												
+<table class="alerts-table">
+	<tr>
+		<th scope="row">Alert tags</th>
+		<td>
+			<ul class="alert-tags-list">
+				<li>
+					<span><a href="https://cwe.mitre.org/data/definitions/94.html">CWE-94</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/Top10/A05_2021-Security_Misconfiguration/">OWASP_2021_A05</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/www-project-top-ten/2017/A6_2017-Security_Misconfiguration.html">OWASP_2017_A06</a></span> 
+				</li>
+				<li>
+					<span><a href="https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/05-Enumerate_Infrastructure_and_Application_Admin_Interfaces">WSTG-v42-CONF-05</a></span> 
+				</li>
+			</ul>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">Alert description</th>
+		<td> 
+<p>htaccess files can be used to alter the configuration of the Apache Web Server software to enable/disable additional functionality and features that the Apache Web Server software has to offer.</p>
+ </td>
+	</tr>
+	
+	<tr>
+		<th scope="row">Request</th>
+		<td><details open="open">
+				<summary>Request line and header section (207 bytes)</summary>
+				
+				<pre><code>GET http://localhost:8000/.htaccess HTTP/1.1
+host: localhost:8000
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0
+pragma: no-cache
+cache-control: no-cache
+
+</code></pre>
+				
+				
+			</details> <details class="request-body" open="open">
+				<summary>Request body (0 bytes)</summary>
+				
+				<pre><code></code></pre>
+				
+				
+			</details></td>
+	</tr>
+	<tr>
+		<th scope="row">Response</th>
+		<td><details open="open">
+				<summary>Status line and header section (118 bytes)</summary>
+				
+				<pre><code>HTTP/1.1 200 OK
+Host: localhost:8000
+Date: Mon, 21 Oct 2024 14:13:26 GMT
+Connection: close
+Content-Length: 603
+
+</code></pre>
+				
+				
+			</details> <details class="response-body" open="open">
+				<summary>Response body (603 bytes)</summary>
+				
+				<pre><code>&lt;IfModule mod_rewrite.c&gt;
+    &lt;IfModule mod_negotiation.c&gt;
+        Options -MultiViews -Indexes
+    &lt;/IfModule&gt;
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+&lt;/IfModule&gt;
+</code></pre>
+				
+				
+			</details></td>
+	</tr>
+	
+	
+	<tr>
+		<th scope="row">Evidence</th>
+		<td><pre><code>HTTP/1.1 200 OK</code></pre></td>
+	</tr>
+	<tr>
+		<th scope="row">Solution</th>
+		<td> 
+<p>Ensure the .htaccess file is not accessible.</p>
+ </td>
+	</tr>
+</table>
+
+											</details></li>
+									</ol>
+								</li>
+								
+							</ol>
+						</li>
+						
+					</ol>
+				</li>
+				
+				
+				  
+				 
+				 
+			</ol>
+		</section>
+
+		<section id="appendix" class="appendix">
+			<h2>Appendix</h2>
+
+			<section id="alert-types" class="alert-types">
+				<h3>Alert types</h3>
+				<p class="alert-types-intro">This section contains additional information on the types of alerts in the report.</p>
+				<ol>
+					<li
+						id="alert-type-0">
+						<h4>.htaccess Information Leak</h4>
+						<table class="alert-types-table">
+							<tr>
+								<th scope="row">Source</th>
+								<td>
+									
+									   <span>raised by an active scanner</span> <span>(<a
+										href="https://www.zaproxy.org/docs/alerts/40032/">.htaccess Information Leak</a>)
+									</span>   
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">CWE ID</th>
+								<td><a
+									href="https://cwe.mitre.org/data/definitions/94.html">94</a></td>
+							</tr>
+							<tr>
+								<th scope="row">WASC ID</th>
+								<td>14</td>
+							</tr>
+							<tr>
+								<th scope="row">Reference</th>
+								<td>
+									<ol>
+										<li><a
+											href="https://developer.mozilla.org/en-US/docs/Learn/Server-side/Apache_Configuration_htaccess">https://developer.mozilla.org/en-US/docs/Learn/Server-side/Apache_Configuration_htaccess</a></li>
+										<li><a
+											href="https://httpd.apache.org/docs/2.4/howto/htaccess.html">https://httpd.apache.org/docs/2.4/howto/htaccess.html</a></li>
+									</ol>
+								</td>
+							</tr>
+						</table>
+					</li>
+				</ol>
+			</section>
+		</section>
+		 
+	</main>
+</body>
+</html>
+
+
+
