@@ -7,14 +7,14 @@
 
 # Laboratory List
 <ol>
-	<li><a href='#'> Laboratorium</a></li>
-	<li><a href='#'> Laboratorium</a></li>
-	<li><a href='#'> Laboratorium</a></li>
-	<li><a href='#'> Laboratorium</a></li>
-	<li><a href='#'> Laboratorium</a></li>
-	<li><a href='#'> Laboratorium</a></li>
-	<li><a href='#'> Laboratorium</a></li>
-	<li><a href='#'> Laboratorium</a></li>
-	<li><a href='#'> Laboratorium</a></li>
-	<li><a href='#'> Laboratorium</a></li>
+	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab1'> Laboratorium</a></li>
+	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab2'> Laboratorium</a></li>
+	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab3'> Laboratorium</a></li>
+	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab4'> Laboratorium</a></li>
+	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab5'> Laboratorium</a></li>
+	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab6'> Laboratorium</a></li>
+	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab7'> Laboratorium</a></li>
+	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab8'> Laboratorium</a></li>
+	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab9'> Laboratorium</a></li>
+	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab10'> Laboratorium</a></li>
 </ol>
