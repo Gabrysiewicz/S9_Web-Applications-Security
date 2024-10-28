@@ -47,11 +47,11 @@ mysql> SELECT * FROM message LIMIT 3;
 
 ## Task 2.2.
 Perform the attack from Figure 3.2 again. This time, however, include the user's login, hash and salt in the message body.
-![Task2.2a]()
+![Task2.2a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_2a.png)
 
 ## Task 2.3.
 Perform the attack from Figure 3.2 again. This time, however, include another user's details in the body of the message.
-![Task2.3]()
+![Task2.3](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_3.png)
 
 ## Task 2.4.
 Add the ability to edit messages to the application. Verify what SQLI attacks are possible against the added module.
