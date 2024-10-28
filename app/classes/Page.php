@@ -1,4 +1,5 @@
-<?php class Page{static function display_header($title){ ?>
+<?php class Page{
+    static function display_header($title){ ?>
     <html lang="en-GB">
     <head>
     <title><?php echo $title ?></title>
