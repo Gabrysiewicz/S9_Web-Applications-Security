@@ -7,8 +7,8 @@
 
 # Tasks to do:
 ## Task 2.1.
-Create a "news" database. Inside, create a "message" table and fill it with data. Use the
-script in Listing 3.1 to create the table.
+**Create a "news" database. Inside, create a "message" table and fill it with data. Use the
+script in Listing 3.1 to create the table.**
 ```
 ➜  ~ docker ps
 CONTAINER ID   IMAGE            COMMAND                  CREATED         STATUS         PORTS                                     NAMES
@@ -46,15 +46,15 @@ mysql> SELECT * FROM message LIMIT 3;
 ```
 
 ## Task 2.2.
-Perform the attack from Figure 3.2 again. This time, however, include the user's login, hash and salt in the message body.
+**Perform the attack from Figure 3.2 again. This time, however, include the user's login, hash and salt in the message body.**
 ![Task2.2a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_2a.png)
 
 ## Task 2.3.
-Perform the attack from Figure 3.2 again. This time, however, include another user's details in the body of the message.
+**Perform the attack from Figure 3.2 again. This time, however, include another user's details in the body of the message.**
 ![Task2.3](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_3.png)
 
 ## Task 2.4.
-Add the ability to edit messages to the application. Verify what SQLI attacks are possible against the added module.
+**Add the ability to edit messages to the application. Verify what SQLI attacks are possible against the added module.**
 ![Task2.4a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_4.png)
 ![Task2.4b](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_4b.png)
 ![Task2.4c](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_4c.png)
@@ -82,10 +82,10 @@ Its creating a query that separates the SQL code structure from the user input d
 This approach is one of the most effective ways to prevent SQL injection attacks.
 
 ## Task 2.5.
-Add a new database user. Define the minimum required set of permissions for it (show what set it is in the report). 
+**Add a new database user. Define the minimum required set of permissions for it (show what set it is in the report). 
 Use the newly created account to connect the application to thedatabase. 
 Verify what has changed in terms of application security.
-Tip. Try the attack in Figure 3.10 again
+Tip. Try the attack in Figure 3.10 again**
 
 Creation of an user
 ```
@@ -130,10 +130,10 @@ $stmt->bind_param("sssi", $name, $type, $content, $deleted);
 $stmt->execute();
 ```
 ## Task 2.6.
-Modify the application. Use only PDO to connect to the database. Place the code for
+**Modify the application. Use only PDO to connect to the database. Place the code for
 handling the database in the Db class. In each case, the data should be retrieved by a dedicated
 function that is called in the PHP page code. The function should return the page a set of data
-to display
+to display**
 ```
 apt-get update
 ```
@@ -220,15 +220,75 @@ class Db {
 
 ```
 ## Task 2.7.
-Include user input filtering in your application
+**Include user input filtering in your application**
+
+`Messages.php`
+```
+// Adding new message
+    if (isset($_POST['add_message'])) {
+        $name = htmlspecialchars(trim($_POST['name']));
+        $type = htmlspecialchars(trim($_POST['type']));
+        $content = htmlspecialchars(trim($_POST['content']));
+
+        if (!$db->addMessage($name, $type, $content)) {
+            echo "<p style='color:red;'>Adding new message failed.</p>";
+        }
+    }
+```
+`Messages.php`
+```
+    // Editing existing message
+    if (isset($_POST['update_message'])) {
+        $id = intval($_POST['id']);
+        $name = htmlspecialchars(trim($_POST['name']));
+        $type = htmlspecialchars(trim($_POST['type']));
+        $content = htmlspecialchars(trim($_POST['content']));
+
+        if ($db->updateMessage($id, $name, $type, $content)) {
+            echo "<p>Message updated successfully.</p>";
+        } else {
+            echo "<p style='color:red;'>Updating message failed.</p>";
+        }
+    }
+```
+`message_edit.php`
+```
+<form method="post" action="messages.php">
+    <input type="hidden" name="id" value="<?php echo $message_id; ?>" />
+    <table>
+        <tr>
+            <td>Name</td>
+            <td>
+                <input type="text" name="name" value="<?php echo htmlspecialchars($message->name); ?>" size="56" required />
+            </td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td>
+                <select name="type">
+                    <option value="public" <?php if ($message->type == "public") echo "selected"; ?>>Public</option>
+                    <option value="private" <?php if ($message->type == "private") echo "selected"; ?>>Private</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Message Content</td>
+            <td>
+                <textarea required name="content" rows="10" cols="40"><?php echo htmlspecialchars($message->message); ?></textarea>
+            </td>
+        </tr>
+    </table>
+    <input type="submit" value="Update Message" name="update_message"/>
+</form>
+```
 
 ## Task 2.8.
-Apply whitelist to filter message type.
+**Apply whitelist to filter message type.
 Tip: Notice that the message type is selected by the user from a list. This does not mean,
 however, that you cannot insert any other string of characters there. This is possible using
 developer tools that modify the content of the page (in the Chrome browser by pressing the
 F12 button). Therefore, you need to verify whether the value transferred from this field is
-included in the set (public, private)
+included in the set (public, private)**
 
 ## Task 2.9.
 Modify the application. Develop comprehensive application security against SQLI attacks.
@@ -241,13 +301,13 @@ will be automatically invoked.
 Tip: The presented approach to filtering and inserting data into the database may require
 rebuilding database functions. The name, email address and URL will be filtered differently.
 This problem can be solved in two ways:
-1 Develop independent functions for different types of data:
+1. Develop independent functions for different types of data:
   - addName
   - addURL
   - addEmail
-2 Develop one generic function for inserting data and pass the type of filter that should be
+2. Develop one generic function for inserting data and pass the type of filter that should be
 used to the function as a parameter.
 
 ## Task 2.10.
-Verify the vulnerability of the secured application to SQLI attacks. Conduct several
-selected attacks on the application and present their results..
+**Verify the vulnerability of the secured application to SQLI attacks. Conduct several
+selected attacks on the application and present their results..**
