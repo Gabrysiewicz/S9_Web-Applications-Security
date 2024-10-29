@@ -86,29 +86,139 @@ Add a new database user. Define the minimum required set of permissions for it (
 Use the newly created account to connect the application to thedatabase. 
 Verify what has changed in terms of application security.
 Tip. Try the attack in Figure 3.10 again
+
 Creation of an user
 ```
-mysql> CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'user_password';
-Query OK, 0 rows affected (0.06 sec)
+mysql> CREATE USER 'new_user'@'172.20.0.3' IDENTIFIED BY 'user_password';
+Query OK, 0 rows affected (0.01 sec)
 ```
 Granting privileges
 ```
-mysql> GRANT SELECT, INSERT, UPDATE ON mydb.* TO 'new_user'@'localhost';
-Query OK, 0 rows affected, 1 warning (0.00 sec)
+mysql> GRANT SELECT, INSERT, UPDATE ON mydb.* TO 'new_user'@'172.20.0.3';
+Query OK, 0 rows affected (0.01 sec)
 ```
 Apply privileges
 ```
 mysql> FLUSH PRIVILEGES;
 Query OK, 0 rows affected (0.01 sec)
 ```
-
-
+!(Task2.5)[]
+!(Task2.5)[]
+In my case I get an error. Which on one hand is bad but on the other does not reveals the version of my database version, which in this case should return:
+```
+mysql> SELECT @@version;
++-----------+
+| @@version |
++-----------+
+| 8.0.39    |
++-----------+
+```
+or
+```
+mysql> SELECT @@version LIKE '10.4.22-MariaDB' LIMIT 1;
++----------------------------------+
+| @@version LIKE '10.4.22-MariaDB' |
++----------------------------------+
+|                                0 |
++----------------------------------+
+1 row in set (0.00 sec)
+```
+But even if it would pass, it propably should be fixed with the use of **prepared statements**
+```
+$stmt = $this->mysqli->prepare("INSERT INTO message (`name`, `type`, `message`, `deleted`) VALUES (?, ?, ?, ?)");
+$stmt->bind_param("sssi", $name, $type, $content, $deleted);
+$stmt->execute();
+```
 ## Task 2.6.
 Modify the application. Use only PDO to connect to the database. Place the code for
 handling the database in the Db class. In each case, the data should be retrieved by a dedicated
 function that is called in the PHP page code. The function should return the page a set of data
 to display
+```
+apt-get update
+```
+```
+apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev libzip-dev && \
+docker-php-ext-configure gd --with-freetype --with-jpeg && \
+docker-php-ext-install gd pdo pdo_mysql
+```
 
+```
+class Db {
+    private $pdo;
+    private $select_result;
+
+    public function __construct($server, $user, $pass, $db) {
+        try {
+            // Create a new PDO instance
+            $this->pdo = new PDO("mysql:host=$server;dbname=$db;charset=utf8", $user, $pass);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            echo "Connection failed: " . $e->getMessage();
+            exit();
+        }
+    }
+
+    public function select($sql) {
+        $results = [];
+        try {
+            $stmt = $this->pdo->query($sql);
+            while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+                $results[] = $row;
+            }
+            $this->select_result = $results;
+            return $results;
+        } catch (PDOException $e) {
+            echo "Select failed: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function addMessage($name, $type, $content) {
+        $sql = "INSERT INTO message (`name`, `type`, `message`, `deleted`) VALUES (:name, :type, :content, 0)";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':type', $type);
+            $stmt->bindParam(':content', $content);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo "Add message failed: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function getMessage($message_id) {
+        foreach ($this->select_result as $message) {
+            if ($message->id == $message_id) {
+                return $message->message;
+            }
+        }
+    }
+
+    public function updateMessage($id, $name, $type, $content) {
+        $sql = "UPDATE message SET name = ?, type = ?, message = ? WHERE id = ?";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(1, $name);
+            $stmt->bindParam(2, $type);
+            $stmt->bindParam(3, $content);
+            $stmt->bindParam(4, $id);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            echo "Error updating message: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function __destruct() {
+        $this->pdo = null; // Close the PDO connection
+    }
+}
+?>
+
+```
 ## Task 2.7.
 Include user input filtering in your application
 
