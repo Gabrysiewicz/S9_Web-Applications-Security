@@ -11,8 +11,16 @@
         $type = htmlspecialchars(trim($_POST['type']));
         $content = htmlspecialchars(trim($_POST['content']));
 
-        if (!$db->addMessage($name, $type, $content)) {
-            echo "<p style='color:red;'>Adding new message failed.</p>";
+        // Define a whitelist 
+        $allowed_types = ['public', 'private'];
+
+        if (in_array($type, $allowed_types)) {
+            if (!$db->addMessage($name, $type, $content)) {
+                echo "<p style='color:red;'>Adding new message failed.</p>";
+            }
+        } else {
+            // Handle invalid type
+            echo "<p style='color:red;'>Invalid message type. Please select a valid option.</p>";
         }
     }
 
