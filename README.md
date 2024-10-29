@@ -102,8 +102,8 @@ Apply privileges
 mysql> FLUSH PRIVILEGES;
 Query OK, 0 rows affected (0.01 sec)
 ```
-!(Task2.5)[]
-!(Task2.5)[]
+![Task2.5](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_5.png)
+![Task2.5](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_5b.png)
 In my case I get an error. Which on one hand is bad but on the other does not reveals the version of my database version, which in this case should return:
 ```
 mysql> SELECT @@version;
@@ -217,10 +217,12 @@ class Db {
     }
 }
 ?>
-
 ```
+![Task 2.6](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_6.png)
 ## Task 2.7.
 **Include user input filtering in your application**
+
+To filter user input, I decided to add the **htmlspecialchars** and **trim** functions to remove unnecessary characters and convert potentially harmful characters such as `'`, `"`, `/`, and `\` into their harmless equivalents.
 
 `Messages.php`
 ```
