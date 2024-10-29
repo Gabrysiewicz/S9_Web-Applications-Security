@@ -2,45 +2,26 @@
     include_once "classes/Page.php";
     include_once "classes/Db.php";
     Page::display_header("Messages");
-    $db = new Db("mysql-db", "root", "rootpass", "mydb");
-    // adding new message
-    if (isset($_REQUEST['add_message'])){
-        $name = $_REQUEST['name'];
-        $type = $_REQUEST['type'];
-        $content = $_REQUEST['content'];
-        if (!$db->addMessage($name, $type, $content))
-            echo "Adding new message failed";
+    // $db = new Db("mysql-db", "root", "rootpass", "mydb");
+    $db = new Db("mysql-db", "new_user", "user_password", "mydb");
+    
+    // Adding new message
+    if (isset($_POST['add_message'])) {
+        $name = htmlspecialchars(trim($_POST['name']));
+        $type = htmlspecialchars(trim($_POST['type']));
+        $content = htmlspecialchars(trim($_POST['content']));
+
+        if (!$db->addMessage($name, $type, $content)) {
+            echo "<p style='color:red;'>Adding new message failed.</p>";
+        }
     }
 
-    // Adding new message
-    // if (isset($_POST['add_message'])) {
-    //     $name = htmlspecialchars(trim($_POST['name']));
-    //     $type = htmlspecialchars(trim($_POST['type']));
-    //     $content = htmlspecialchars(trim($_POST['content']));
-
-    //     if (!$db->addMessage($name, $type, $content)) {
-    //         echo "<p style='color:red;'>Adding new message failed.</p>";
-    //     }
-    // }
-
     // Editing existing message
-    // if (isset($_POST['update_message'])) {
-    //     $id = intval($_POST['id']);
-    //     $name = htmlspecialchars(trim($_POST['name']));
-    //     $type = htmlspecialchars(trim($_POST['type']));
-    //     $content = htmlspecialchars(trim($_POST['content']));
-
-    //     if ($db->updateMessage($id, $name, $type, $content)) {
-    //         echo "<p>Message updated successfully.</p>";
-    //     } else {
-    //         echo "<p style='color:red;'>Updating message failed.</p>";
-    //     }
-    // }
-    if (isset($_REQUEST['update_message'])) {
-        $id = intval($_REQUEST['id']);
-        $name = $_REQUEST['name'];
-        $type = $_REQUEST['type'];
-        $content = $_REQUEST['content'];
+    if (isset($_POST['update_message'])) {
+        $id = intval($_POST['id']);
+        $name = htmlspecialchars(trim($_POST['name']));
+        $type = htmlspecialchars(trim($_POST['type']));
+        $content = htmlspecialchars(trim($_POST['content']));
 
         if ($db->updateMessage($id, $name, $type, $content)) {
             echo "<p>Message updated successfully.</p>";

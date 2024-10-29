@@ -5,7 +5,8 @@ include_once "classes/Db.php";
 Page::display_header("Edit Message");
 
 // Database connection
-$db = new Db("mysql-db", "root", "rootpass", "mydb");
+// $db = new Db("mysql-db", "root", "rootpass", "mydb");
+$db = new Db("mysql-db", "new_user", "user_password", "mydb");
 
 // Get the message ID from the query parameter
 $message_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -46,7 +47,7 @@ if ($message_id > 0) {
         <tr>
             <td>Message Content</td>
             <td>
-                <textarea required name="content" rows="10" cols="40"><?php echo ($message->message); ?></textarea>
+                <textarea required name="content" rows="10" cols="40"><?php echo htmlspecialchars($message->message); ?></textarea>
             </td>
         </tr>
     </table>
