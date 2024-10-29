@@ -55,12 +55,53 @@ Perform the attack from Figure 3.2 again. This time, however, include another us
 
 ## Task 2.4.
 Add the ability to edit messages to the application. Verify what SQLI attacks are possible against the added module.
+![Task2.4a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_4.png)
+![Task2.4b](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_4b.png)
+![Task2.4c](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_4c.png)
+In my case, The update edit made in unsuccessfull to perform SQL Injection. Its propably due to prepared statements
+```
+$stmt = $this->mysqli->prepare("UPDATE message SET name = ?, type = ?, message = ? WHERE id = ?");
+```
+inside of 
+```
+public function updateMessage($id, $name, $type, $content) {
+        $stmt = $this->mysqli->prepare("UPDATE message SET name = ?, type = ?, message = ? WHERE id = ?");
+        
+        if ($stmt) {
+            $stmt->bind_param("sssi", $name, $type, $content, $id);
+            $stmt->execute();
+            $stmt->close();
+            return true;
+        } else {
+            printf("Error updating message: %s\n", $this->mysqli->error);
+            return false;
+        }
+    }
+```
+Its creating a query that separates the SQL code structure from the user input data. 
+This approach is one of the most effective ways to prevent SQL injection attacks.
 
 ## Task 2.5.
 Add a new database user. Define the minimum required set of permissions for it (show what set it is in the report). 
 Use the newly created account to connect the application to thedatabase. 
 Verify what has changed in terms of application security.
 Tip. Try the attack in Figure 3.10 again
+Creation of an user
+```
+mysql> CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'user_password';
+Query OK, 0 rows affected (0.06 sec)
+```
+Granting privileges
+```
+mysql> GRANT SELECT, INSERT, UPDATE ON mydb.* TO 'new_user'@'localhost';
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+```
+Apply privileges
+```
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.01 sec)
+```
+
 
 ## Task 2.6.
 Modify the application. Use only PDO to connect to the database. Place the code for
