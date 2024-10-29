@@ -292,6 +292,30 @@ developer tools that modify the content of the page (in the Chrome browser by pr
 F12 button). Therefore, you need to verify whether the value transferred from this field is
 included in the set (public, private)**
 
+`Messages.php`
+```
+// Adding new message
+    if (isset($_POST['add_message'])) {
+        $name = htmlspecialchars(trim($_POST['name']));
+        $type = htmlspecialchars(trim($_POST['type']));
+        $content = htmlspecialchars(trim($_POST['content']));
+
+        // whitelist 
+        $allowed_types = ['public', 'private'];
+
+        if (in_array($type, $allowed_types)) {
+            if (!$db->addMessage($name, $type, $content)) {
+                echo "<p style='color:red;'>Adding new message failed.</p>";
+            }
+        } else {
+            // Handle invalid type
+            echo "<p style='color:red;'>Invalid message type. Please select a valid option.</p>";
+        }
+    }
+```
+![Task2_8](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_8.png)
+![Task2_8b](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_8b.png)
+
 ## Task 2.9.
 Modify the application. Develop comprehensive application security against SQLI attacks.
 Create an additional Filter class. Include all the functionalities necessary to filter data. Add
