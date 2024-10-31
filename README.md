@@ -350,6 +350,7 @@ Filter class has a filter function for each type:
   - Ensures it's a string and uses a built-in validation function.
 - general
   -  Removes any character that is not a word character `\w`, which includes letters, digits, and underscores. `\s` removes whitespace.
+
 Also I am not sure why there are email and url functions, I assumed it had to be type and content so I made type filter and general filter for content.
 
 **Filter.php**
@@ -506,6 +507,8 @@ I tried basic payloads of:
 - `" OR "1"="1" #`
 
 Creating a new message and editing existing ones resulted in the following error:
+
 `Invalid input detected. Only letters and spaces are allowed.`
+
 as it did in earlier task:
 ![Task 2.9](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_9.png)
