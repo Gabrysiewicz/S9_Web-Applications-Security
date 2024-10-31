@@ -292,6 +292,8 @@ developer tools that modify the content of the page (in the Chrome browser by pr
 F12 button). Therefore, you need to verify whether the value transferred from this field is
 included in the set (public, private)**
 
+<hr/>
+
 `Messages.php`
 ```
 // Adding new message
@@ -333,6 +335,169 @@ This problem can be solved in two ways:
   - addEmail
 2. Develop one generic function for inserting data and pass the type of filter that should be
 used to the function as a parameter.
+<hr/>
+
+At first I wanted to allow chars as `\'` but I really didn't liked the outcome and decided it would be best to forbidd these chars
+![Task 2.9]()
+
+Filter class has a filter function for each type:
+- name
+  - makes sure its a string and doesn't allow characters that are not letters or spaces
+- email
+  - makes sure its a string and uses built-in validation function
+- type
+  - makes sure its a string and is eitherway `public` or `private`
+- url
+  - makes sure its a string and uses built-it validation function
+- general
+  -  removes any character that is not a word character `\w` includes letters, digits, and underscores. `\s` removes whitespace.
+  
+**Filter.php**
+```
+<?php
+class Filter {
+    public static function filter_name($name) {
+        if (!is_string($name)) {
+            throw new InvalidArgumentException("Name must be a string.");
+        }
+        if (preg_match('/[^a-zA-Z\s]/', $name)) {
+            throw new InvalidArgumentException('Invalid input detected. Only letters and spaces are allowed.');
+        }
+        return htmlspecialchars(trim($name));
+    }
+    // ??
+    public static function filter_email($email) {
+        if (!is_string($email)) {
+            throw new InvalidArgumentException("Email must be a string.");
+        }
+        // Built-in validation
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidArgumentException("Invalid email format.");
+        }
+        return htmlspecialchars(trim($email));
+    }
+    // ??
+    public static function filter_url($url) {
+        if (!is_string($url)) {
+            throw new InvalidArgumentException("URL must be a string.");
+        }
+        // Built-in validation
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            throw new InvalidArgumentException("Invalid URL format.");
+        }
+        return htmlspecialchars(trim($url));
+    }
+
+    public static function filter_general($input) {
+        if (!is_string($input)) {
+            throw new InvalidArgumentException("Input must be a string.");
+        }
+        // Remove potentially harmful characters
+        return preg_replace('/[^\w\s]/', '', htmlspecialchars(trim($input)));
+    }
+    
+    public static function filter_type($type) {
+        if (!is_string($type)) {
+            throw new InvalidArgumentException("Type must be a string.");
+        }
+        // Ensure the type is either 'public' or 'private'
+        $type = strtolower(htmlspecialchars(trim($type)));
+        if (!in_array($type, ['public', 'private'])) {
+            throw new InvalidArgumentException("Type must be either 'public' or 'private'.");
+        }
+        return $type;
+    }
+}
+?>
+
+```
+
+Db.php makes use of Filter class functions so before inserting or updating data it throws exception if its needed.
+Also sql queries are `prepared statements` to increase security.
+
+**Db.php**
+```
+<?php
+class Db {
+    private $pdo; // PDO instance
+    private $select_result; // result
+
+    public function __construct($server, $user, $pass, $db) {
+        try {
+            // Create PDO instance
+            $this->pdo = new PDO("mysql:host=$server;dbname=$db;charset=utf8", $user, $pass);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            echo "Connection failed: " . $e->getMessage();
+            exit();
+        }
+    }
+
+    public function select($sql) {
+        $results = [];
+        try {
+            $stmt = $this->pdo->query($sql);
+            while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+                $results[] = $row;
+            }
+            $this->select_result = $results;
+            return $results;
+        } catch (PDOException $e) {
+            echo "Select failed: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function addMessage($name, $type, $content) {
+        $filtered_name = Filter::filter_name($name);
+        $filtered_type = Filter::filter_type($type);
+        $filtered_content = Filter::filter_general($content);
+
+        $sql = "INSERT INTO message (`name`, `type`, `message`, `deleted`) VALUES (:name, :type, :content, 0)";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':name', $filtered_name);
+            $stmt->bindParam(':type', $filtered_type);
+            $stmt->bindParam(':content', $filtered_content);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo "Add message failed: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function updateMessage($id, $name, $type, $content) {
+        $filtered_name = Filter::filter_name($name);
+        $filtered_type = Filter::filter_type($type);
+        $filtered_content = Filter::filter_general($content);
+
+        $sql = "UPDATE message SET name = ?, type = ?, message = ? WHERE id = ?";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(1, $filtered_name);
+            $stmt->bindParam(2, $filtered_type);
+            $stmt->bindParam(3, $filtered_content);
+            $stmt->bindParam(4, $id);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            echo "Error updating message: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function __destruct() {
+        $this->pdo = null; // Close the PDO connection
+    }
+}
+?>
+```
+
+After an update of application I also tested it with ZAP and as a result I got some warnings but not `High` risk errors:
+![ZAP]()
+
+
+
 
 ## Task 2.10.
 **Verify the vulnerability of the secured application to SQLI attacks. Conduct several
