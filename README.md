@@ -337,21 +337,22 @@ This problem can be solved in two ways:
 used to the function as a parameter.
 <hr/>
 
-At first I wanted to allow chars as `\'` but I really didn't liked the outcome and decided it would be best to forbidd these chars
-![Task 2.9]()
+At first, I wanted to allow characters like `'`, but I really didn't like the outcome and decided it would be best to forbid these characters.
+![Task 2.9](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_9.png)
 
 Filter class has a filter function for each type:
 - name
-  - makes sure its a string and doesn't allow characters that are not letters or spaces
+  - Ensures it's a string and doesn't allow characters that are not letters or spaces.
 - email
-  - makes sure its a string and uses built-in validation function
+  - Ensures it's a string and uses a built-in validation function.
 - type
-  - makes sure its a string and is eitherway `public` or `private`
+  - Ensures it's a string and is either `public` or `private`.
 - url
-  - makes sure its a string and uses built-it validation function
+  - Ensures it's a string and uses a built-in validation function.
 - general
-  -  removes any character that is not a word character `\w` includes letters, digits, and underscores. `\s` removes whitespace.
-  
+  -  Removes any character that is not a word character `\w`, which includes letters, digits, and underscores. `\s` removes whitespace.
+Also I am not sure why there are email and url functions, I assumed it had to be type and content so I made type filter and general filter for content.
+
 **Filter.php**
 ```
 <?php
@@ -412,8 +413,7 @@ class Filter {
 
 ```
 
-Db.php makes use of Filter class functions so before inserting or updating data it throws exception if its needed.
-Also sql queries are `prepared statements` to increase security.
+Db.php makes use of the Filter class functions, so before inserting or updating data, it throws an exception if necessary. Additionally, SQL queries are **prepared statements** to increase security.
 
 **Db.php**
 ```
@@ -493,12 +493,20 @@ class Db {
 ?>
 ```
 
-After an update of application I also tested it with ZAP and as a result I got some warnings but not `High` risk errors:
-![ZAP]()
-
-
-
+After an update of the application, I also tested it with **ZAP**, and as a result, I received some warnings but no **High** risk errors.
+![ZAP](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_10_Zapp.png)
 
 ## Task 2.10.
 **Verify the vulnerability of the secured application to SQLI attacks. Conduct several
 selected attacks on the application and present their results..**
+
+I tried basic payloads of:
+- `' OR '1'='1' --`
+- `' OR '1'='1' #`
+- `" OR "1"="1" --`
+- `" OR "1"="1" #`
+
+Creating a new message and editing existing ones resulted in the following error:
+`Invalid input detected. Only letters and spaces are allowed.`
+as it did in earlier task:
+![Task 2.9](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab2/img/Task2_9.png)
