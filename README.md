@@ -79,7 +79,6 @@ public function updateMessage($id, $name, $type, $content) {
     }
 ```
 Its creating a query that separates the SQL code structure from the user input data. 
-This approach is one of the most effective ways to prevent SQL injection attacks.
 
 ## Task 2.5.
 **Add a new database user. Define the minimum required set of permissions for it (show what set it is in the report). 
