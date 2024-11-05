@@ -71,6 +71,7 @@ public function addMessageBasic($name, $type, $content) {
 ![Task 3.2](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_2.png)
 
 The use of **addslashes()** partialy worked, it didnt allowed keyloger and other style based XSS but it still somehow allowed suspicious link to pass.
+So as it solved some issues with XSS there are still some left to take care of.
 
 # Task 3.3.
 Protect the rest of your application against XSS attacks. Modify the Filter class created in
