@@ -14,17 +14,17 @@ With the use of XSS the content and the visuals of the website could be changed 
 Additional unitended content such as links can be added with a delivery to eitherway harmfull or suspicious website, 
 like scam websites or downloadable content that might be malware.
 
-![Task 3.1a]()
+![Task 3.1a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_1a.png)
 
-![Task 3.1b]()
+![Task 3.1b](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_1b.png)
 
 There might be more harmfull ways of using XSS such as keylogger that in other scenario would send data to some endpoint.
 With the use of XSS attacker might be able to steal cookie, or insert a form that might convince user into inserting sensitive data
 into it.
 
-![Task 3.1c]()
+![Task 3.1c](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_1c.png)
 
-![Task 3.1d]()
+![Task 3.1d](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_1d.png)
 
 # Task 3.2.
 Verify the operation of the addslashes function in the context of protection against XSS
