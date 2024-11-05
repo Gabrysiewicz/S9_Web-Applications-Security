@@ -14,10 +14,12 @@ class Db {
         }
     }
 
-    public function select($sql) {
+
+    public function select($sql, $params = []) {
         $results = [];
         try {
-            $stmt = $this->pdo->query($sql);
+            $stmt = $this->pdo->prepare($sql); // Prepare the SQL statement
+            $stmt->execute($params); // Execute with parameters
             while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
                 $results[] = $row;
             }
@@ -28,7 +30,6 @@ class Db {
             return false;
         }
     }
-
     public function addMessage($name, $type, $content) {
         $filtered_name = Filter::filter_name($name);
         $filtered_type = Filter::filter_type($type);
@@ -40,6 +41,23 @@ class Db {
             $stmt->bindParam(':name', $filtered_name);
             $stmt->bindParam(':type', $filtered_type);
             $stmt->bindParam(':content', $filtered_content);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo "Add message failed: " . $e->getMessage();
+            return false;
+        }
+    }
+    public function addMessageBasic($name, $type, $content) {
+        $name = $_REQUEST['name'];
+        $type = $_REQUEST['type'];
+        $content = $_REQUEST['content'];
+
+        $sql = "INSERT INTO message (`name`, `type`, `message`, `deleted`) VALUES (:name, :type, :content, 0)";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':type', $type);
+            $stmt->bindParam(':content', $content);
             return $stmt->execute();
         } catch (PDOException $e) {
             echo "Add message failed: " . $e->getMessage();

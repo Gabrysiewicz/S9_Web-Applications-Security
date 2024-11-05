@@ -1,33 +1,36 @@
 <?php
 include_once "classes/Page.php";
 include_once "classes/Db.php";
+include_once "classes/Filter.php";
 
 Page::display_header("Edit Message");
 
 // Database connection
-// $db = new Db("mysql-db", "root", "rootpass", "mydb");
-$db = new Db("mysql-db", "new_user", "user_password", "mydb");
+$db = new Db("mysql-db", "root", "rootpass", "mydb");
+// $db = new Db("mysql-db", "new_user", "user_password", "mydb");
 
-// Get the message ID from the query parameter
+// Get the message ID from the query parameter and ensure it's valid
 $message_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $message = null;
 
 // Fetch the message details if a valid ID is provided
 if ($message_id > 0) {
-    $result = $db->select("SELECT * FROM message WHERE id = $message_id");
+    $result = $db->select("SELECT * FROM message WHERE id = :id", [':id' => $message_id]);
     if (!empty($result)) {
         $message = $result[0];
     } else {
-        echo "<p>Message not found.</p>";
-        Page::display_footer();
+        echo "<p style='color:red;'>Message not found.</p>";
         exit();
     }
+} else {
+    echo "<p style='color:red;'>Invalid message ID.</p>";
+    exit();
 }
 ?>
 
 <h2>Edit Message</h2>
 <form method="post" action="messages.php">
-    <input type="hidden" name="id" value="<?php echo $message_id; ?>" />
+    <input type="hidden" name="id" value="<?php echo htmlspecialchars($message_id); ?>" />
     <table>
         <tr>
             <td>Name</td>
@@ -39,8 +42,8 @@ if ($message_id > 0) {
             <td>Type</td>
             <td>
                 <select name="type">
-                    <option value="public" <?php if ($message->type == "public") echo "selected"; ?>>Public</option>
-                    <option value="private" <?php if ($message->type == "private") echo "selected"; ?>>Private</option>
+                    <option value="public" <?php if ($message->type === "public") echo "selected"; ?>>Public</option>
+                    <option value="private" <?php if ($message->type === "private") echo "selected"; ?>>Private</option>
                 </select>
             </td>
         </tr>
