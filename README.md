@@ -31,6 +31,47 @@ Verify the operation of the addslashes function in the context of protection aga
 attacks. Check if this feature prevents HTML or JavaScript injection.
 <hr/>
 
+```
+if (isset($_POST['add_message'])) {
+    // whitelist
+    $allowed_types = ['public', 'private'];
+
+    try {
+        $name = addslashes($_REQUEST['name']);
+        $type = addslashes($_REQUEST['type']);
+        $content = addslashes($_REQUEST['content']);
+
+        if (!$db->addMessageBasic($name, $type, $content)) {
+            echo "<p style='color:red;'>Adding new message failed.</p>";
+        }
+    } catch (InvalidArgumentException $e) {
+        echo "<p style='color:red;'>{$e->getMessage()}</p>";
+    }
+}
+```
+```
+public function addMessageBasic($name, $type, $content) {
+        $name = addslashes($_REQUEST['name']);
+        $type = addslashes($_REQUEST['type']);
+        $content = addslashes($_REQUEST['content']);
+
+        $sql = "INSERT INTO message (`name`, `type`, `message`, `deleted`) VALUES (:name, :type, :content, 0)";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':name', $name);
+            $stmt->bindParam(':type', $type);
+            $stmt->bindParam(':content', $content);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo "Add message failed: " . $e->getMessage();
+            return false;
+        }
+    }
+```
+![Task 3.2](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_2.png)
+
+The use of **addslashes()** partialy worked, it didnt allowed keyloger and other style based XSS but it still somehow allowed suspicious link to pass.
+
 # Task 3.3.
 Protect the rest of your application against XSS attacks. Modify the Filter class created in
 the previous lab so that it filters data not only for SQLI attacks but also for XSS attacks.
