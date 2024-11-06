@@ -74,7 +74,7 @@ public function addMessageBasic($name, $type, $content) {
         }
     }
 ```
-![Task 3.2](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_2.png)
+![Task 3.2](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_2a.png)
 
 The use of **addslashes()** partialy worked, it didnt allowed keyloger and other **style** based XSS but it still somehow allowed suspicious link to pass.
 So as it solved some issues with XSS there are still some left to take care of.
@@ -145,7 +145,7 @@ if (isset($_POST['add_message'])) {
 
 XSS: suspicious/malware link
 
-![Task3.3a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_3.png)
+![Task3.3a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_3a.png)
 
 ![Task3.3b](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_3b.png)
 
