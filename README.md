@@ -26,6 +26,12 @@ into it.
 
 ![Task 3.1d](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_1d.png)
 
+Overall XSS attacks can lead to various malicious actions, including:
+- Stealing user credentials
+- Spreading web worms or malware
+- Accessing user’s browser history or controlling the browser remotely
+- Analyzing and using other applications
+
 # Task 3.2.
 Verify the operation of the addslashes function in the context of protection against XSS
 attacks. Check if this feature prevents HTML or JavaScript injection.
@@ -70,16 +76,84 @@ public function addMessageBasic($name, $type, $content) {
 ```
 ![Task 3.2](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_2.png)
 
-The use of **addslashes()** partialy worked, it didnt allowed keyloger and other style based XSS but it still somehow allowed suspicious link to pass.
+The use of **addslashes()** partialy worked, it didnt allowed keyloger and other **style** based XSS but it still somehow allowed suspicious link to pass.
 So as it solved some issues with XSS there are still some left to take care of.
 
-# Task 3.3.
+# Task 3.3. & Task 3.4
 Protect the rest of your application against XSS attacks. Modify the Filter class created in
 the previous lab so that it filters data not only for SQLI attacks but also for XSS attacks.
-<hr/>
 
-# Task 3.4.
 Verify the vulnerability of the secured application to XSS attacks. Conduct several selected
 attacks on the application and present their results.
+
 <hr/>
 
+Filter.php code snippet
+```
+public static function filter_name($name) {
+        if (!is_string($name)) {
+            throw new InvalidArgumentException("Name must be a string.");
+        }
+        if (preg_match('/[^a-zA-Z\s]/', $name)) {
+            throw new InvalidArgumentException('Invalid input detected. Only letters and spaces are allowed.');
+        }
+        return addslashes(htmlspecialchars(trim($name)));
+    }
+```
+
+Db.php code snippet
+```
+public function addMessage($name, $type, $content) {
+        $filtered_name = Filter::filter_name($name);
+        $filtered_type = Filter::filter_type($type);
+        $filtered_content = Filter::filter_general($content);
+
+        $sql = "INSERT INTO message (`name`, `type`, `message`, `deleted`) VALUES (:name, :type, :content, 0)";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':name', $filtered_name);
+            $stmt->bindParam(':type', $filtered_type);
+            $stmt->bindParam(':content', $filtered_content);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo "Add message failed: " . $e->getMessage();
+            return false;
+        }
+    }
+```
+
+messages.php code snippet
+```
+// Adding a new message
+if (isset($_POST['add_message'])) {
+    $name = $_POST['name'];
+    $type = $_POST['type'];
+    $content = $_POST['content'];
+
+    // whitelist
+    $allowed_types = ['public', 'private'];
+
+    try {
+        if (!$db->addMessage($name, $type, $content)) {
+            echo "<p style='color:red;'>Adding new message failed.</p>";
+        }
+    } catch (InvalidArgumentException $e) {
+        echo "<p style='color:red;'>{$e->getMessage()}</p>";
+    }
+}
+```
+
+XSS: suspicious/malware link
+
+![Task3.3a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_3.png)
+
+![Task3.3b](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_3b.png)
+
+![Task3.3c](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_3c.png)
+
+![Task3.3d](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_3d.png)
+
+In my program, any attempt to submit suspicious content triggers an exception. 
+The only drawback of this approach is that users cannot enter certain inputs into the form. 
+This limitation restricts user options on one hand but enhances application security on the other.
+This trade-off is likely worth it, as achieving security often makes the experience slightly more difficult for regular users, but ultimately helps protect both the user and the application.
