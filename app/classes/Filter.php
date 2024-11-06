@@ -7,7 +7,7 @@ class Filter {
         if (preg_match('/[^a-zA-Z\s]/', $name)) {
             throw new InvalidArgumentException('Invalid input detected. Only letters and spaces are allowed.');
         }
-        return htmlspecialchars(trim($name));
+        return addslashes(htmlspecialchars(trim($name)));
     }
     // ??
     public static function filter_email($email) {
@@ -18,7 +18,7 @@ class Filter {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException("Invalid email format.");
         }
-        return htmlspecialchars(trim($email));
+        return addslashes(htmlspecialchars(trim($email)));
     }
     // ??
     public static function filter_url($url) {
@@ -29,7 +29,7 @@ class Filter {
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException("Invalid URL format.");
         }
-        return htmlspecialchars(trim($url));
+        return addslashes(htmlspecialchars(trim($url)));
     }
 
     public static function filter_general($input) {
@@ -39,7 +39,7 @@ class Filter {
         if (preg_match('/[^a-zA-Z\s]/', $input)) {
             throw new InvalidArgumentException('Invalid input detected. Only letters and spaces are allowed.');
         }
-        return htmlspecialchars(trim($input));
+        return addslashes(htmlspecialchars(trim($input)));
     }
     
     public static function filter_type($type) {

@@ -48,9 +48,9 @@ class Db {
         }
     }
     public function addMessageBasic($name, $type, $content) {
-        $name = $_REQUEST['name'];
-        $type = $_REQUEST['type'];
-        $content = $_REQUEST['content'];
+        $name = addslashes($_REQUEST['name']);
+        $type = addslashes($_REQUEST['type']);
+        $content = addslashes($_REQUEST['content']);
 
         $sql = "INSERT INTO message (`name`, `type`, `message`, `deleted`) VALUES (:name, :type, :content, 0)";
         try {

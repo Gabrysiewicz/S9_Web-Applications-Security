@@ -8,19 +8,15 @@ $db = new Db("mysql-db", "root", "rootpass", "mydb");
 
 // Adding a new message
 if (isset($_POST['add_message'])) {
-    // $name = htmlspecialchars(trim($_POST['name']));
-    // $type = htmlspecialchars(trim($_POST['type']));
-    // $content = htmlspecialchars(trim($_POST['content']));
+    $name = $_POST['name'];
+    $type = $_POST['type'];
+    $content = $_POST['content'];
 
     // whitelist
     $allowed_types = ['public', 'private'];
 
     try {
-        $name = $_REQUEST['name'];
-        $type = $_REQUEST['type'];
-        $content = $_REQUEST['content'];
-
-        if (!$db->addMessageBasic($name, $type, $content)) {
+        if (!$db->addMessage($name, $type, $content)) {
             echo "<p style='color:red;'>Adding new message failed.</p>";
         }
     } catch (InvalidArgumentException $e) {
@@ -30,17 +26,13 @@ if (isset($_POST['add_message'])) {
 
 // Editing an existing message
 if (isset($_POST['update_message'])) {
-    $id = htmlspecialchars(intval($_POST['id']));
-    $name = htmlspecialchars(trim($_POST['name']));
-    $type = htmlspecialchars(trim($_POST['type']));
-    $content = htmlspecialchars(trim($_POST['content']));
+    $id = $_POST['id'];
+    $name = $_POST['name'];
+    $type = $_POST['type'];
+    $content = $_POST['content'];
 
     try {
-        $filtered_name = Filter::filter_name($name);
-        $filtered_type = Filter::filter_type($type);
-        $filtered_content = Filter::filter_general($content);
-
-        if ($db->updateMessage($id, $filtered_name, $filtered_type, $filtered_content)) {
+        if ($db->updateMessage($id, $name, $type, $content)) {
             echo "<p>Message updated successfully.</p>";
         } else {
             echo "<p style='color:red;'>Updating message failed.</p>";
