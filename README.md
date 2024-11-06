@@ -100,6 +100,7 @@ public static function filter_name($name) {
         return addslashes(htmlspecialchars(trim($name)));
     }
 ```
+<br/>
 
 Db.php code snippet
 ```
@@ -121,6 +122,7 @@ public function addMessage($name, $type, $content) {
         }
     }
 ```
+<br/>
 
 messages.php code snippet
 ```
@@ -142,12 +144,16 @@ if (isset($_POST['add_message'])) {
     }
 }
 ```
+<br/>
 
 XSS: suspicious/malware link
 
 ![Task3.3a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_3a.png)
 
 ![Task3.3b](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_3b.png)
+
+<br/>
+XSS: Semi-Keyloger
 
 ![Task3.3c](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab3/img/Task3_3c.png)
 
