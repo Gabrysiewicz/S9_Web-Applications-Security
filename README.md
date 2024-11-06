@@ -87,7 +87,7 @@ class Pdo_
     }
 }
 ```
-![Task4_1]()
+![Task4_1](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_1b.png)
 
 <br />
 
