@@ -1,4 +1,6 @@
 <?php
+require './htmlpurifier-4.15.0/library/HTMLPurifier.auto.php';
+
 class Db {
     private $pdo; // PDO instance
     private $select_result; // result
