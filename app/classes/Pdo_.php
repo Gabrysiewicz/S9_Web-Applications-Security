@@ -49,11 +49,11 @@ class Pdo_
 
             if ($user_data) {
                 // Retrieve the stored salt and hash
-                $salt = $user_data['salt'];
+                $storedSalt = $user_data['salt'];
                 $storedHash = $user_data['hash'];
 
                 // Hash the entered password with the stored salt
-                $hashedPassword = hash('sha512', $salt . $password);
+                $hashedPassword = hash('sha512', $storedSalt . $password);
 
                 // Compare the hashed password to the stored hash
                 if ($hashedPassword === $storedHash) {
@@ -68,6 +68,52 @@ class Pdo_
             
         } catch (Exception $e) {
             echo "Login attempt failed: " . $e->getMessage();
+        }
+    }
+
+    // Method to change the user's password
+    public function change_password($login, $old_password, $new_password) {
+        $login = $this->purifier->purify($login);
+
+        try {
+            // Verify old password
+            $sql = "SELECT id, hash, salt FROM user WHERE login = :login";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['login' => $login]);
+            $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user_data) {
+                $storedHash = $user_data['hash'];
+                $storedSalt = $user_data['salt'];
+                
+                // Hash the old password with the stored salt
+                $hashedOldPassword = hash('sha512', $storedSalt . $old_password);
+
+                // Verify the old password
+                if ($hashedOldPassword === $storedHash) {
+                    // Generate new salt and hash for the new password
+                    $newSalt = bin2hex(random_bytes(8)); // Generate a new salt
+                    $newHash = hash('sha512', $newSalt . $new_password);
+
+                    // Update the database with the new hash and salt
+                    $updateSql = "UPDATE user SET hash = :newHash, salt = :newSalt WHERE id = :id";
+                    $updateStmt = $this->pdo->prepare($updateSql);
+                    $updateStmt->execute([
+                        'newHash' => $newHash,
+                        'newSalt' => $newSalt,
+                        'id' => $user_data['id']
+                    ]);
+
+                    echo 'Password changed successfully!';
+                } else {
+                    echo 'Password change FAILED: Incorrect current password.';
+                }
+            } else {
+                echo 'Password change FAILED: User not found.';
+            }
+
+        } catch (Exception $e) {
+            echo "Password change attempt failed: " . $e->getMessage();
         }
     }
 }

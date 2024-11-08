@@ -22,6 +22,18 @@ if (isset($_REQUEST['log_user_in'])) {
     $password = $_REQUEST['password'];
     $pdo->log_user_in($login, $password);
 }
+// change passowrd
+if( isset($_REQUEST['change_password'])){
+    $login = $_REQUEST['login'];
+    $old_password = $_REQUEST['old_password'];
+    $new_password = $_REQUEST['new_password'];
+    $new_password2 = $_REQUEST['new_password2'];
+    if( $new_password != $new_password2){
+        echo "Passwords doesn\'t match";
+    }else{
+        $pdo->change_password($login, $old_password, $new_password);
+    }
+}
 ?>
     <h2> Main page</h2>
     <hr/>
@@ -79,6 +91,29 @@ if (isset($_REQUEST['log_user_in'])) {
         </tr>
     </table>
     <input type="submit" id= "submit" value="Log in" name="log_user_in">
+    </form>
+    <hr>
+    <p>Change Password</p>
+    <form method="post" action="index.php">
+        <table>
+            <tr>
+                <td>Login</td>
+                <td><input required type="text" name="login" size="40"/></td>
+            </tr>
+            <tr>
+                <td>Current Password</td>
+                <td><input required type="password" name="old_password" size="40"/></td>
+            </tr>
+            <tr>
+                <td>New Password</td>
+                <td><input required type="password" name="new_password" size="40"/></td>
+            </tr>
+            <tr>
+                <td>Repeat New Password</td>
+                <td><input required type="password" name="new_password2" size="40"/></td>
+            </tr>
+        </table>
+        <input type="submit" value="Change Password" name="change_password">
     </form>
     <?php
         Page::display_navigation();
