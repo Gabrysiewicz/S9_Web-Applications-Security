@@ -169,6 +169,33 @@ database. Analyze the security of the Aes.php class in Listing 5.3. Were you cor
 the cryptographic key and initialization vector in the code?
 <hr />
 
+In my application hashing password before inserting it to database was from the beggining. Also the listing 5.3 doesnt exist while listing 4.3 is about lifetimes and OTP so I am assuming the task is all about adding hashing password before executing query to database
+```
+public function add_user($login, $email, $password){
+        $login=$this->purifier->purify($login);
+        $email=$this->purifier->purify($email);
+        $salt = bin2hex(random_bytes(8)); // 16 characters
+        try {
+            $sql = "INSERT INTO `user`( `login`, `email`, `hash`, `salt`, `id_status`, `password_form`) VALUES (:login, :email, :hash, :salt, :id_status, :password_form)";
+            //hash password
+            $hashedPassword = hash('sha512', $salt . $password);
+
+            $data = [
+                'login' => $login,
+                'email' => $email,
+                'hash' => $hashedPassword,
+                'salt' => $salt,
+                'id_status'=>'1',
+                'password_form'=>'1'
+            ];
+            $this->pdo->prepare($sql)->execute($data);
+        } catch (Exception $e) {
+            echo "Adding new user failed: " . $e->getMessage();
+        }
+    }
+```
+
+
 # Task 4.5.
 Add the mechanisms presented in this lab to your application and implement two-factor
 authentication. In addition to verifying the login and password, send the user a one-time code.
