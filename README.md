@@ -10,7 +10,7 @@ Implement the ability to create user accounts and log in in the application. Che
 can use different hash functions to store your passwords.
 
 Modify login and user account creation to use salt to store passwords.
-<br />
+<hr />
 
 ```
 <?php
@@ -89,18 +89,85 @@ class Pdo_
 ```
 ![Task4_1](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_1b.png)
 
-<br />
-
 # Task 4.3.
 Implement the ability to change the user's password in the application. Remember that
 changing the password involves generating a new salt value.
-<br />
+
+<hr/>
+
+`Pdo_.php `
+```
+// Method to change the user's password
+    public function change_password($login, $old_password, $new_password) {
+        $login = $this->purifier->purify($login);
+
+        try {
+            // Verify old password
+            $sql = "SELECT id, hash, salt FROM user WHERE login = :login";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute(['login' => $login]);
+            $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user_data) {
+                $storedHash = $user_data['hash'];
+                $storedSalt = $user_data['salt'];
+                
+                // Hash the old password with the stored salt
+                $hashedOldPassword = hash('sha512', $storedSalt . $old_password);
+
+                // Verify the old password
+                if ($hashedOldPassword === $storedHash) {
+                    // Generate new salt and hash for the new password
+                    $newSalt = bin2hex(random_bytes(8)); // Generate a new salt
+                    $newHash = hash('sha512', $newSalt . $new_password);
+
+                    // Update the database with the new hash and salt
+                    $updateSql = "UPDATE user SET hash = :newHash, salt = :newSalt WHERE id = :id";
+                    $updateStmt = $this->pdo->prepare($updateSql);
+                    $updateStmt->execute([
+                        'newHash' => $newHash,
+                        'newSalt' => $newSalt,
+                        'id' => $user_data['id']
+                    ]);
+
+                    echo 'Password changed successfully!';
+                } else {
+                    echo 'Password change FAILED: Incorrect current password.';
+                }
+            } else {
+                echo 'Password change FAILED: User not found.';
+            }
+
+        } catch (Exception $e) {
+            echo "Password change attempt failed: " . $e->getMessage();
+        }
+    }
+}
+```
+
+Change password of 
+```
+user: test
+old password:test 
+new password: test2
+new password repeat: test2
+```
+![Task 4.2a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_2a.png)
+<hr/>
+
+Successfull change of user's password
+![Task 4.2b](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_2b.png)
+<hr/>
+
+Login to user: test with new credentials
+
+![Task 4.2c](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_2c.png)
 
 # Task 4.4.
 Add functionality to your application to encrypt password hashes before saving them to the
 database. Analyze the security of the Aes.php class in Listing 5.3. Were you correct in storing
 the cryptographic key and initialization vector in the code?
-<br />
+<hr />
 
 # Task 4.5.
 Add the mechanisms presented in this lab to your application and implement two-factor
