@@ -1,10 +1,11 @@
 <?php
+session_start();  // Initialize session at the beginning of the script
 include_once "classes/Page.php";
 include_once "classes/Pdo_.php";
 Page::display_header("Main page");
 $pdo=new Pdo_("mysql-db", "root", "rootpass", "mydb");
 
-// adding new user
+// Adding new user
 if (isset($_REQUEST['add_user'])) {
     $login = $_REQUEST['login'];
     $email = $_REQUEST['email'];
@@ -16,13 +17,13 @@ if (isset($_REQUEST['add_user'])) {
         echo 'Passwords doesn\'t match';
     }
 }
-// adding new user
+// Login
 if (isset($_REQUEST['log_user_in'])) {
     $login = $_REQUEST['login'];
     $password = $_REQUEST['password'];
     $pdo->log_user_in($login, $password);
 }
-// change passowrd
+// Change passowrd
 if( isset($_REQUEST['change_password'])){
     $login = $_REQUEST['login'];
     $old_password = $_REQUEST['old_password'];
@@ -34,6 +35,22 @@ if( isset($_REQUEST['change_password'])){
         $pdo->change_password($login, $old_password, $new_password);
     }
 }
+// Login 2FA
+if (isset($_REQUEST['log_user_in_2FA'])) {
+    $login = $_REQUEST['login'];
+    $password = $_REQUEST['password'];
+    $pdo->log_2F_step1($login, $password);
+}
+// Log user in with 2FA
+if (isset($_REQUEST['verify_user'])) {
+    $code = $_REQUEST['code'];
+    $login = $_SESSION['login'];
+    if( $pdo->log_2F_step2($login, $code)){
+        echo 'You are logged in as: '.$_SESSION['login'];
+        $_SESSION['logged']='YES';
+    }
+}
+   
 ?>
     <h2> Main page</h2>
     <hr/>
@@ -79,19 +96,33 @@ if( isset($_REQUEST['change_password'])){
             <td>login</td>
             <td>
                 <label for="name"></label>
-                <input required type="text" name="login" id="login" size="40" value="test123"/>
+                <input required type="text" name="login" id="login" size="40"/>
             </td>
         </tr>
         <tr>
             <td>password</td>
             <td>
                 <label for="name"></label>
-                <input required type="text" name="password" id="password" size="40" value="student"/>
+                <input required type="text" name="password" id="password" size="40" />
             </td>
         </tr>
     </table>
-    <input type="submit" id= "submit" value="Log in" name="log_user_in">
+    <input type="submit" id= "submit" value="Log in" name="log_user_in_2FA">
     </form>
+    <form method="post" action="index.php">
+    <table>
+        <tr>
+            <td>Code</td>
+            <td>
+                <label for="code"></label>
+                <input required type="text" name="code" id="code" size="40" value=""/>
+            </td>
+        </tr>
+    </table>
+    <input type="submit" id="submit" value="Verify" name="verify_user">
+    </form>
+
+
     <hr>
     <p>Change Password</p>
     <form method="post" action="index.php">

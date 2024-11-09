@@ -116,4 +116,87 @@ class Pdo_
             echo "Password change attempt failed: " . $e->getMessage();
         }
     }
+
+    public function log_2F_step1($login, $password){
+        $login=$this->purifier->purify($login);
+        try {
+            $sql="SELECT id, hash, login, salt, email FROM user WHERE login=:login";
+            $stmt= $this->pdo->prepare($sql);
+            $stmt->execute(['login'=>$login]);
+            $user_data=$stmt->fetch();
+            $hashedPassword = hash('sha512', $user_data['salt'].$password);
+            
+            if($hashedPassword == $user_data['hash']){
+                //generate and send OTP
+                $otp = random_int(100000, 999999);
+                $code_lifetime = date('Y-m-d H:i:s', time()+300);
+                try{
+                    $sql="UPDATE `user` SET `sms_code`=:code, `code_timelife`=:lifetime WHERE login=:login";
+                    $data= [
+                        'login' => $login,
+                        'code' => $otp,
+                        'lifetime' => $code_lifetime
+                    ];
+                    $this->pdo->prepare($sql)->execute($data);
+                    // Send OTP via email
+                    // $emailSent = $this->sendOtpEmail($user_data['email'], $otp);
+                    // if (!$emailSent) {
+                    //     return ['result' => 'failed', 'message' => 'OTP email failed to send.'];
+                    // } 
+                    print "code: ".$otp;                   
+                    $result= [
+                        'result'=>'success'
+                    ];
+                    $_SESSION['login'] = $login;
+                    return $result;
+                } catch (Exception $e) {
+                    print 'Exception' . $e->getMessage();
+                    return ['result' => 'failed', 'message' => 'Database error: ' . $e->getMessage()];
+                }
+            }else{
+                echo 'login FAILED<BR/>';
+                $result= [
+                    'result'=>'failed'
+                ];
+                return ['result' => 'failed', 'message' => 'Invalid login credentials.'];
+            }
+        } catch (Exception $e) {
+            print 'Exception' . $e->getMessage();
+            return ['result' => 'failed', 'message' => 'Database error: ' . $e->getMessage()];
+        }
+    }    
+    private function sendOtpEmail($email, $otp) {
+        $subject = "Your OTP Code";
+        $message = "Your OTP code is: $otp. It is valid for 5 minutes.";
+        $headers = "From: no-reply@yourdomain.com\r\n" .
+                   "Reply-To: s95400@pollub.edu.pl\r\n" .
+                   "X-Mailer: PHP/" . phpversion();
+    
+        if (mail($email, $subject, $message, $headers)) {
+            return true;
+        } else {
+            error_log("Failed to send OTP email to $email");
+            return false;
+        }
+    }   
+    public function log_2F_step2($login,$code){
+        $login=$this->purifier->purify($login);
+        $code=$this->purifier->purify($code);
+        try {
+            $sql="SELECT id,login,sms_code,code_timelife FROM user WHERE login=:login";
+            $stmt= $this->pdo->prepare($sql);
+            $stmt->execute(['login'=>$login]);
+            $user_data=$stmt->fetch();
+            if($code==$user_data['sms_code'] && time()< strtotime($user_data['code_timelife'])){
+                //login successfull
+                echo 'Login successfull<BR/>';
+                return true;
+            } else {
+                echo 'login FAILED<BR/>';
+                return false;
+            }
+        } catch (Exception $e) {
+            print 'Exception' . $e->getMessage();
+        }
+    }
 }
