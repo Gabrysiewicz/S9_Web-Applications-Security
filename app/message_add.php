@@ -1,10 +1,23 @@
 <?php
-include_once "classes/Page.php";
-include_once "classes/Db.php";
-Page::display_header("Add Message");
 session_start();
 
-// Check if the session has expired
+include_once "classes/Page.php";
+include_once "classes/Pdo_.php";
+Page::display_header("Add Message");
+$pdo=new Pdo_("mysql-db", "root", "rootpass", "mydb");
+// SESSION EXPIRATION CHECK
+if( isset($_SESSION['session_expiration'])){
+    echo "session_expiration: ".$_SESSION['session_expiration']."<br/>";
+}else{
+    echo "session_expiration: null <br/>";
+}
+
+if( isset($_SESSION['logged_in'])){
+    echo "Logged in: ".$_SESSION['logged_in']."<br/>";
+}else{
+    echo "Logged in: null <br/>";
+}
+$pdo->refresh_session_expiration();
 $pdo->check_session_expiration();
 ?>
 

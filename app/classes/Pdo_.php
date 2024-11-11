@@ -7,6 +7,7 @@ error_reporting(E_ALL);
 class Pdo_{
     private $pdo;
     private $purifier;
+    private $select_result; // result
 
     public function __construct($server, $user, $pass, $db) {
         $config = HTMLPurifier_Config::createDefault();
@@ -217,13 +218,46 @@ class Pdo_{
             if (isset($_SESSION['session_expiration']) && time() > $_SESSION['session_expiration']) {
                 session_unset();
                 session_destroy();
-
-                // header("Location: index.php?message=Session expired. Please log in again.");
                 exit();
             } else {
                 $_SESSION['session_expiration'] = time() + 300;
             }
         }
     }
-    
+    public function refresh_session_expiration(){
+        if(isset($_SESSION["login"]) && isset($_SESSION["code"])){
+            $login=$this->purifier->purify($_SESSION["login"]);
+            $code=$this->purifier->purify($_SESSION["code"]);
+            try {
+                $sql="SELECT id,login,sms_code,code_timelife FROM user WHERE login=:login";
+                $stmt= $this->pdo->prepare($sql);
+                $stmt->execute(['login'=>$login]);
+                $user_data=$stmt->fetch();
+                if($code==$user_data['sms_code'] && time()< strtotime($user_data['code_timelife'])){
+                    // Set session variables for successful login
+                    $_SESSION['logged_in'] = true;
+                    $_SESSION['login'] = $user_data['login'];
+                    $_SESSION['session_expiration'] = time() + 300; // 5 minutes from now
+                    return true;
+                }
+            } catch (Exception $e) {
+                print 'Exception' . $e->getMessage();
+            }
+        }
+    }
+    public function select($sql, $params = []) {
+        $results = [];
+        try {
+            $stmt = $this->pdo->prepare($sql); // Prepare the SQL statement
+            $stmt->execute($params); // Execute with parameters
+            while ($row = $stmt->fetch(PDO::FETCH_OBJ)) {
+                $results[] = $row;
+            }
+            $this->select_result = $results;
+            return $results;
+        } catch (PDOException $e) {
+            echo "Select failed: " . $e->getMessage();
+            return false;
+        }
+    }
 }

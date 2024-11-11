@@ -1,11 +1,26 @@
 <?php
+session_start();
+
 include_once "classes/Page.php";
-include_once "classes/Db.php";
+include_once "classes/Pdo_.php";
 include_once "classes/Filter.php";
 
 Page::display_header("Messages");
-$db = new Db("mysql-db", "root", "rootpass", "mydb");
+$pdo=new Pdo_("mysql-db", "root", "rootpass", "mydb");
+// SESSION EXPIRATION CHECK
+if( isset($_SESSION['session_expiration'])){
+    echo "session_expiration: ".$_SESSION['session_expiration']."<br/>";
+}else{
+    echo "session_expiration: null <br/>";
+}
 
+if( isset($_SESSION['logged_in'])){
+    echo "Logged in: ".$_SESSION['logged_in']."<br/>";
+}else{
+    echo "Logged in: null <br/>";
+}
+$pdo->refresh_session_expiration();
+$pdo->check_session_expiration();
 // Adding a new message
 if (isset($_POST['add_message'])) {
     $name = $_POST['name'];
@@ -16,7 +31,7 @@ if (isset($_POST['add_message'])) {
     $allowed_types = ['public', 'private'];
 
     try {
-        if (!$db->addMessage($name, $type, $content)) {
+        if (!$pdo->addMessage($name, $type, $content)) {
             echo "<p style='color:red;'>Adding new message failed.</p>";
         }
     } catch (InvalidArgumentException $e) {
@@ -32,7 +47,7 @@ if (isset($_POST['update_message'])) {
     $content = $_POST['content'];
 
     try {
-        if ($db->updateMessage($id, $name, $type, $content)) {
+        if ($pdo->updateMessage($id, $name, $type, $content)) {
             echo "<p>Message updated successfully.</p>";
         } else {
             echo "<p style='color:red;'>Updating message failed.</p>";
@@ -46,7 +61,7 @@ if (isset($_POST['update_message'])) {
 <ol>
     <?php
     $sql = "SELECT * from message";
-    $messages = $db->select($sql);
+    $messages = $pdo->select($sql);
     echo "<table>";
     foreach ($messages as $msg):
         echo "<tr>";

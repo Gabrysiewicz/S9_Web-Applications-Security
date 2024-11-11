@@ -1,17 +1,27 @@
 <?php
+session_start();
+
 include_once "classes/Page.php";
-include_once "classes/Db.php";
+include_once "classes/Pdo_.php";
 include_once "classes/Filter.php";
 
 Page::display_header("Edit Message");
-session_start();
 
-// Check if the session has expired
+$pdo=new Pdo_("mysql-db", "root", "rootpass", "mydb");
+// SESSION EXPIRATION CHECK
+if( isset($_SESSION['session_expiration'])){
+    echo "session_expiration: ".$_SESSION['session_expiration']."<br/>";
+}else{
+    echo "session_expiration: null <br/>";
+}
+
+if( isset($_SESSION['logged_in'])){
+    echo "Logged in: ".$_SESSION['logged_in']."<br/>";
+}else{
+    echo "Logged in: null <br/>";
+}
+$pdo->refresh_session_expiration();
 $pdo->check_session_expiration();
-
-// Database connection
-$db = new Db("mysql-db", "root", "rootpass", "mydb");
-// $db = new Db("mysql-db", "new_user", "user_password", "mydb");
 
 // Get the message ID from the query parameter and ensure it's valid
 $message_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -19,7 +29,7 @@ $message = null;
 
 // Fetch the message details if a valid ID is provided
 if ($message_id > 0) {
-    $result = $db->select("SELECT * FROM message WHERE id = :id", [':id' => $message_id]);
+    $result = $pdo->select("SELECT * FROM message WHERE id = :id", [':id' => $message_id]);
     if (!empty($result)) {
         $message = $result[0];
     } else {
