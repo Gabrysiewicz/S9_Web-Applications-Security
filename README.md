@@ -169,7 +169,8 @@ database. Analyze the security of the Aes.php class in Listing 5.3. Were you cor
 the cryptographic key and initialization vector in the code?
 <hr />
 
-In my application hashing password before inserting it to database was from the beggining. Also the listing 5.3 doesnt exist while listing 4.3 is about lifetimes and OTP so I am assuming the task is all about adding hashing password before executing query to database
+In my application, password hashing before inserting it into the database was implemented from the beginning. Also, listing 5.3 does not exist, while listing 4.3 discusses lifetimes and OTPs. Therefore, I assume the task is about adding password hashing before executing the query to the database.
+
 ```
 public function add_user($login, $email, $password){
         $login=$this->purifier->purify($login);
@@ -200,10 +201,16 @@ public function add_user($login, $email, $password){
 Add the mechanisms presented in this lab to your application and implement two-factor
 authentication. In addition to verifying the login and password, send the user a one-time code.
 Use an independent communication channel to submit.
-<br />
+<hr />
 
-# Task 4.6.
-A good level of security offered by the login mechanism is not everything. It happens that the
+![Task 4.5a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_5a.png)
+
+![Task 4.5b](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_5b.png)
+
+![Task 4.5c](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_5c.png)
+
+# Task 4.6. & Task 4.7.
+**A good level of security offered by the login mechanism is not everything. It happens that the
 user forgets to log out of the application after finishing work. Then the next computer user has
 a chance to use the started session. Protect your application against this possibility. Inside the
 session, set a variable that determines the session expiration time. Let this time be 5 minutes.
@@ -211,11 +218,25 @@ When the user logs in, set the session expiration time to now()=5 minutes. When 
 the next page or any other operation in the session, perform the same operation before
 checking whether the session has not expired. If the session has expired, set the session status
 to "not logged in" and redirect the user to the login page by displaying an appropriate
-message.
-<br />
+message.**
 
-# Task 4.7.
-Implement the session mechanism on all pages of the developed application. Display the
-user's login or "not logged in" information on the page.
-<br />
+<hr/>
+
+<b> Implement the session mechanism on all pages of the application. Display the user's login information on the page or show 'Not logged in' if the user is not authenticated. </b>
+
+<hr />
+
+After logging in with 2FA, a session expiration date is set for 5 minutes. After this time, the user is automatically logged out. Each page now manages the expiration date by either refreshing it or verifying it.
+![Task 4.6a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_6a.png)
+
+![Task 4.6c](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_6c.png)
+
+![Task 4.6d](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_6d.png)
+
+![Task 4.6e](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_6e.png)
+
+If the session expires, the user is logged out, and the session is destroyed.
+![Task 4.6b](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab4/img/Task4_6b.png)
+
+
 
