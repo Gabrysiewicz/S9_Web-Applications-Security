@@ -4,6 +4,10 @@ include_once "classes/Db.php";
 include_once "classes/Filter.php";
 
 Page::display_header("Edit Message");
+session_start();
+
+// Check if the session has expired
+$pdo->check_session_expiration();
 
 // Database connection
 $db = new Db("mysql-db", "root", "rootpass", "mydb");

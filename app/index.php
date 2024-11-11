@@ -4,6 +4,26 @@ include_once "classes/Page.php";
 include_once "classes/Pdo_.php";
 Page::display_header("Main page");
 $pdo=new Pdo_("mysql-db", "root", "rootpass", "mydb");
+// Check if the session is active
+// $sessionValid = $pdo->check_session_expiration();
+// if (!$sessionValid) {
+//     echo "<p>Your session has expired or you are not logged in. Please log in below:</p>";
+//     // Display the login and registration forms since the session is either invalid or expired
+// }
+
+if( isset($_SESSION['session_expiration'])){
+    echo "session_expiration: ".$_SESSION['session_expiration']."<br/>";
+}else{
+    echo "session_expiration: null <br/>";
+}
+
+if( isset($_SESSION['logged_in'])){
+    echo "Logged in: ".$_SESSION['logged_in']."<br/>";
+}else{
+    echo "Logged in: null <br/>";
+}
+
+$pdo->check_session_expiration();
 
 // Adding new user
 if (isset($_REQUEST['add_user'])) {
@@ -24,7 +44,7 @@ if (isset($_REQUEST['log_user_in'])) {
     $pdo->log_user_in($login, $password);
 }
 // Change passowrd
-if( isset($_REQUEST['change_password'])){
+if (isset($_REQUEST['change_password'])){
     $login = $_REQUEST['login'];
     $old_password = $_REQUEST['old_password'];
     $new_password = $_REQUEST['new_password'];
@@ -45,12 +65,11 @@ if (isset($_REQUEST['log_user_in_2FA'])) {
 if (isset($_REQUEST['verify_user'])) {
     $code = $_REQUEST['code'];
     $login = $_SESSION['login'];
-    if( $pdo->log_2F_step2($login, $code)){
+    if( $pdo->log_2F_step2($login, $code) ){
         echo 'You are logged in as: '.$_SESSION['login'];
-        $_SESSION['logged']='YES';
+        $_SESSION['logged'] = 'YES';
     }
 }
-   
 ?>
     <h2> Main page</h2>
     <hr/>

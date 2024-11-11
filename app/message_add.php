@@ -2,6 +2,10 @@
 include_once "classes/Page.php";
 include_once "classes/Db.php";
 Page::display_header("Add Message");
+session_start();
+
+// Check if the session has expired
+$pdo->check_session_expiration();
 ?>
 
 <hr>

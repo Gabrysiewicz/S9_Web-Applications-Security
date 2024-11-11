@@ -1,7 +1,10 @@
 <?php
 require './htmlpurifier-4.15.0/library/HTMLPurifier.auto.php';
-class Pdo_
-{
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+class Pdo_{
     private $pdo;
     private $purifier;
 
@@ -57,6 +60,12 @@ class Pdo_
 
                 // Compare the hashed password to the stored hash
                 if ($hashedPassword === $storedHash) {
+                    // Set session variables for successful login
+                    session_start();
+                    $_SESSION['logged_in'] = true;
+                    $_SESSION['login'] = $user_data['login'];
+                    $_SESSION['session_expiration'] = time() + 300; // 5 minutes from now
+
                     echo 'Login successful! <br/>';
                     echo 'You are logged in as: ' . htmlspecialchars($user_data['login']) . '<br/>';
                 } else {
@@ -188,8 +197,12 @@ class Pdo_
             $stmt->execute(['login'=>$login]);
             $user_data=$stmt->fetch();
             if($code==$user_data['sms_code'] && time()< strtotime($user_data['code_timelife'])){
-                //login successfull
-                echo 'Login successfull<BR/>';
+                // Set session variables for successful login
+                $_SESSION['logged_in'] = true;
+                $_SESSION['login'] = $user_data['login'];
+                $_SESSION['session_expiration'] = time() + 300; // 5 minutes from now
+                echo 'Login successful! <br/>';
+                echo 'You are logged in as: ' . htmlspecialchars($user_data['login']) . '<br/>';
                 return true;
             } else {
                 echo 'login FAILED<BR/>';
@@ -199,4 +212,18 @@ class Pdo_
             print 'Exception' . $e->getMessage();
         }
     }
+    public function check_session_expiration() {
+        if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+            if (isset($_SESSION['session_expiration']) && time() > $_SESSION['session_expiration']) {
+                session_unset();
+                session_destroy();
+
+                // header("Location: index.php?message=Session expired. Please log in again.");
+                exit();
+            } else {
+                $_SESSION['session_expiration'] = time() + 300;
+            }
+        }
+    }
+    
 }
