@@ -22,7 +22,7 @@
 ### Outcome: Application is running
 <div align='center'>
 
-  ![application](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ApplicationIsRunning.png)
+  ![application](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab1/ApplicationIsRunning.png)
 
 </div>
          
@@ -35,7 +35,7 @@
 ### Outcome: Zap is scanning the application
 <div align='center'>
 
-![zap](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ZapIsScanning.png)
+![zap](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab1/ZapIsScanning.png)
 
 </div>
 
@@ -43,7 +43,7 @@
 <br>
 <div align='center'>
 
-![zap alert output](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/main/ZapRaportAlerts.png)
+![zap alert output](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab1/ZapRaportAlerts.png)
 
 </div>
 
