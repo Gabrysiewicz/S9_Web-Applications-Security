@@ -122,6 +122,15 @@ ALTER TABLE `message`
  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 ```
 
+![Task 5.1 a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_1a.png)
+
+![Task 5.1 b](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_1b.png)
+
+![Task 5.1 c](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_1c.png)
+
+![Task 5.1 d](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_1d.png)
+
+![Task 5.1 e](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_1e.png)
 
 
 
