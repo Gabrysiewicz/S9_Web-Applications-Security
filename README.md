@@ -181,24 +181,23 @@ Add message editing and deleting functions to your application. Make these funct
 available only to authorized users.
 
 <hr/>
+<h4> Messages view for user with role "user", delete buttons are hidden from unprivileged user </h4>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_3a.png" />
+</p>
 
-```
-SELECT DISTINCT
-    r.role_name AS role,
-    r.description AS role_description,
-    p.name AS privilege,
-    rp.issue_time,
-    rp.expire_time
-FROM 
-    role r
-JOIN 
-    role_privilege rp ON r.id = rp.id_role
-JOIN 
-    privilege p ON rp.id_privilege = p.id
-WHERE 
-    LOWER(p.name) LIKE 'add%' OR LOWER(p.name) LIKE 'delete%' 
-ORDER BY 
-    r.role_name, p.name;
+<h4> Still "user"  might want to delete message via url `localhost/messages.php?delete_message=1` but its also secured to check user role before commiting such action </h4>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_3b.png" />
+</p>
+
+<h4> Messages view for admin with role "admin" </h4>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_3c.png" />
+</p>
 
 
-```
+<h4> View after successful delete of user's message </h4>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_3d.png" />
+</p>
