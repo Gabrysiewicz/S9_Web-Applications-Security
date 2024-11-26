@@ -147,7 +147,7 @@ if (isset($_REQUEST['verify_user'])) {
         <input type="submit" value="Change Password" name="change_password">
     </form>
     <?php
-        Page::display_navigation();
+        Page::display_navigation($_SESSION['role']);
     ?>
     </body>
 </html>

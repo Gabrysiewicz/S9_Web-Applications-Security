@@ -198,7 +198,7 @@ class Pdo_{
         $login=$this->purifier->purify($login);
         $code=$this->purifier->purify($code);
         try {
-            $sql="SELECT id,login,sms_code,code_timelife FROM user WHERE login=:login";
+            $sql="SELECT user.id,login,sms_code,code_timelife,role_name FROM user INNER JOIN user_role on user.id = user_role.id_user INNER JOIN role ON user_role.id_role = role.id WHERE login=:login";
             $stmt= $this->pdo->prepare($sql);
             $stmt->execute(['login'=>$login]);
             $user_data=$stmt->fetch();
@@ -206,6 +206,7 @@ class Pdo_{
                 // Set session variables for successful login
                 $_SESSION['logged_in'] = true;
                 $_SESSION['login'] = $user_data['login'];
+                $_SESSION['role'] = $user_data['role_name'];
                 $_SESSION['session_expiration'] = time() + 300; // 5 minutes from now
                 echo 'Login successful! <br/>';
                 echo 'You are logged in as: ' . htmlspecialchars($user_data['login']) . '<br/>';
@@ -277,6 +278,13 @@ class Pdo_{
         }else{
             echo "Logged in: null <br/>";
         }
+
+        if( isset($_SESSION['role'])){
+            echo "Role: ".$_SESSION['role']."<br/>";
+        }else{
+            echo "Role: unknown <br/>";
+        }
+
         $this->refresh_session_expiration();
         $this->check_session_expiration();
     }

@@ -55,7 +55,7 @@ $pdo->check_session_expiration();
 <hr>
 <p>Navigation</p>
 <?php
-Page::display_navigation();
+Page::display_navigation($_SESSION['role']);
 ?>
 </body>
 </html>

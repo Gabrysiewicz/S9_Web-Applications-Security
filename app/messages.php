@@ -86,7 +86,7 @@ if (isset($_POST['update_message'])) {
 <hr>
 <p>Navigation</p>
 <?php
-Page::display_navigation();
+Page::display_navigation($_SESSION['role']);
 ?>
 </body>
 </html>

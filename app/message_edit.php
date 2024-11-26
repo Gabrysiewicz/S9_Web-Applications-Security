@@ -74,5 +74,5 @@ if ($message_id > 0) {
 <hr>
 <p>Navigation</p>
 <?php
-Page::display_navigation();
+Page::display_navigation($_SESSION['role']);
 ?>

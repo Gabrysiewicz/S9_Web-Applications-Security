@@ -198,6 +198,8 @@ function display_permissions_table_5($permissions) {
     </style>
     </head>
 <body>
+<?php
+if ($_SESSION["role"] === 'moderator' || $_SESSION["role"] === 'admin') { ?>
     <main>
     <section>
         <table>
@@ -264,7 +266,9 @@ function display_permissions_table_5($permissions) {
 
     </main>
     <?php
-        Page::display_navigation();
+        Page::display_navigation($_SESSION['role']);
+}
     ?>
+
 </body>
 </html>
