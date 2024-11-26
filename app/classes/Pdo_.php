@@ -304,6 +304,9 @@ class Pdo_{
             return false;
         }
     }
+    public function prepare($sql) {
+        return $this->pdo->prepare($sql);
+    }
     
     
 }
