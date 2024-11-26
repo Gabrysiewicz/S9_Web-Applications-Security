@@ -139,6 +139,28 @@ Verify the list of effective user permissions - create a set of permissions for 
 user, resulting from his permissions and the permissions resulting from the roles assigned to
 him. Save a list of permissions in the session. When displaying a page, only show the user the
 items for which they have permission.
+<h4> View for unlogged user, privileges are hidden </h4>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2a.png" />
+</p>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2b.png" />
+</p>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2c.png" />
+</p>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2d.png" />
+</p>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2e.png" />
+</p>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2f.png" />
+</p>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2g.png" />
+</p>
 
 <hr/>
 
