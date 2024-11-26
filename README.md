@@ -193,17 +193,20 @@ available only to authorized users.
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_3a.png" />
 </p>
 
+<hr/>
 <h4> Still "user"  might want to delete message via url `localhost/messages.php?delete_message=1` but its also secured to check user role before commiting such action </h4>
 <p align="center">
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_3b.png" />
 </p>
 
+<hr/>
 <h4> Messages view for admin with role "admin" </h4>
 <p align="center">
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_3c.png" />
 </p>
 
 
+<hr/>
 <h4> View after successful delete of user's message </h4>
 <p align="center">
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_3d.png" />
