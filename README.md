@@ -139,6 +139,40 @@ Verify the list of effective user permissions - create a set of permissions for 
 user, resulting from his permissions and the permissions resulting from the roles assigned to
 him. Save a list of permissions in the session. When displaying a page, only show the user the
 items for which they have permission.
+<h4> View for unlogged user, privileges are hidden </h4>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2a.png" />
+</p>
+
+<h4> Logging as a "test" user which has a role of "user" which is default and has the least amount of privileges</h4>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2b.png" />
+</p>
+
+<h4> Logged in as "user" role, the privileges navigation is hidden </h4>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2c.png" />
+</p>
+
+<h4> The dafault "user" might want to try access localhost/privileges.php but the content is rendered only for privileged roles such as "moderator" and "admin" </h4>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2d.png" />
+</p>
+
+<h4> Loggin in as a admin with "admin" role </h4>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2e.png" />
+</p>
+
+<h4> Logged in as admin, the privileges navigation is visible and admin can acceess its content </h4>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2f.png" />
+</p>
+
+<h4> Admin has access to privileges.php </h4>
+<p align="center">
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2g.png" />
+</p>
 
 <hr/>
 
