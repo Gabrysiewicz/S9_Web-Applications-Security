@@ -15,20 +15,25 @@ $pdo->refresh_session_expiration();
 $pdo->check_session_expiration();
 // Adding a new message
 if (isset($_POST['add_message'])) {
-    $name = $_POST['name'];
-    $type = $_POST['type'];
-    $content = $_POST['content'];
+    if(isset($_SESSION['login'])){
+        $name = $_POST['name'];
+        $type = $_POST['type'];
+        $content = $_POST['content'];
+        $user_id = $_SESSION['user_id'];
+        // whitelist
+        $allowed_types = ['public', 'private'];
 
-    // whitelist
-    $allowed_types = ['public', 'private'];
-
-    try {
-        if (!$pdo->addMessage($name, $type, $content)) {
-            echo "<p style='color:red;'>Adding new message failed.</p>";
+        try {
+            if (!$pdo->addMessage($name, $type, $content, $user_id)) {
+                echo "<p style='color:red;'>Adding new message failed.</p>";
+            }
+        } catch (InvalidArgumentException $e) {
+            echo "<p style='color:red;'>{$e->getMessage()}</p>";
         }
-    } catch (InvalidArgumentException $e) {
-        echo "<p style='color:red;'>{$e->getMessage()}</p>";
+    }else{
+        echo "<h1 color='red'> YOU MUST BE LOGGED IN TO POST MESSAGES </h1>";
     }
+    
 }
 
 // Editing an existing message
@@ -51,7 +56,7 @@ if (isset($_POST['update_message'])) {
 // Delete an existing message
 if (isset($_GET['delete_message'])) {
     // Check if the user has the required role
-    if ($_SESSION['role'] === 'moderator' || $_SESSION['role'] === 'admin') {
+    if ($_SESSION['role'] === 'moderator' || $_SESSION['role'] === 'admin' || (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $_GET['owner'])) {
         $id = (int)$_GET['delete_message']; // Cast to int for security
 
         try {
@@ -75,23 +80,38 @@ if (isset($_GET['delete_message'])) {
 <p> Messages </p>
 <ol>
     <?php
-    $sql = "SELECT * FROM message WHERE deleted = 0";
-    $messages = $pdo->select($sql);
-    echo "<table>";
-    foreach ($messages as $msg):
-        echo "<tr>";
-        echo "<td>" . htmlspecialchars($msg->name) . "</td>";
-        echo "<td>" . $msg->message . "</td>";
-        echo "<td><a href='message_edit.php?id=" . htmlspecialchars($msg->id) . "'>Edit</a></td>";
+    if(isset($_SESSION['login'])){
+        echo "<a href='messages.php?from_user=".$_SESSION['user_id']."'> My Messages </a>";
+    }
+    if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == @$_GET['from_user']){
+        $sql = "SELECT * FROM message WHERE deleted = 0 and user_id = ".$_SESSION['user_id'];
+        $messages = $pdo->select($sql);
+    }else{
+        $sql = "SELECT * FROM message WHERE deleted = 0";
+        $messages = $pdo->select($sql);
+    }
+    if(isset($messages) && $messages != null) {
+        echo "<table>";
+        foreach ($messages as $msg):
+            echo "<tr>";
+            echo "<td>" . htmlspecialchars($msg->name) . "</td>";
+            echo "<td>" . $msg->message . "</td>";
+            // Show delete link only for moderators or admins
+            if ($_SESSION['role'] === 'moderator' || $_SESSION['role'] === 'admin' || @(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $_GET['from_user'])) {
+                echo "<td><a href='message_edit.php?id=" . htmlspecialchars($msg->id) . "&owner=".htmlspecialchars($msg->user_id)."'>Edit</a></td>";
+            }
+            // Show delete link only for moderators or admins
+            if ($_SESSION['role'] === 'moderator' || $_SESSION['role'] === 'admin' || @(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $_GET['from_user'])) {
+                echo "<td><a href='?delete_message=" . htmlspecialchars($msg->id) . "&owner=".htmlspecialchars($msg->user_id)."' style='color:red;'>Delete</a></td>";
+            }
+            echo "</tr>";
+        endforeach;
+        
+        echo "</table>";
+    }else{
+        echo "<h2> Nothing to display </h2>";
+    }
     
-        // Show delete link only for moderators or admins
-        if ($_SESSION['role'] === 'moderator' || $_SESSION['role'] === 'admin') {
-            echo "<td><a href='?delete_message=" . htmlspecialchars($msg->id) . "' style='color:red;'>Delete</a></td>";
-        }
-        echo "</tr>";
-    endforeach;
-    
-    echo "</table>";
     ?>
 </ol>
 <hr>

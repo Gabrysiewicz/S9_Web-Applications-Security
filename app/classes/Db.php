@@ -32,17 +32,18 @@ class Db {
             return false;
         }
     }
-    public function addMessage($name, $type, $content) {
+    public function addMessage($name, $type, $content, $user_id) {
         $filtered_name = Filter::filter_name($name);
         $filtered_type = Filter::filter_type($type);
         $filtered_content = Filter::filter_general($content);
 
-        $sql = "INSERT INTO message (`name`, `type`, `message`, `deleted`) VALUES (:name, :type, :content, 0)";
+        $sql = "INSERT INTO message (`name`, `type`, `message`, `deleted`, `user_id`) VALUES (:name, :type, :content, 0, :user_id)";
         try {
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(':name', $filtered_name);
             $stmt->bindParam(':type', $filtered_type);
             $stmt->bindParam(':content', $filtered_content);
+            $stmt->bindParam(':user_id', $user_id);
             return $stmt->execute();
         } catch (PDOException $e) {
             echo "Add message failed: " . $e->getMessage();

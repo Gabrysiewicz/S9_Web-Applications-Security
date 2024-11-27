@@ -43,6 +43,9 @@ if ($message_id > 0) {
 ?>
 
 <h2>Edit Message</h2>
+<?php
+    if ($_SESSION['role'] === 'moderator' || $_SESSION['role'] === 'admin' || @(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $_GET['owner'])) {
+?>
 <form method="post" action="messages.php">
     <input type="hidden" name="id" value="<?php echo htmlspecialchars($message_id); ?>" />
     <table>
@@ -70,7 +73,11 @@ if ($message_id > 0) {
     </table>
     <input type="submit" value="Update Message" name="update_message"/>
 </form>
-
+<?php
+    }else{
+        echo "<h1 color='red'>Looks like you are not the owner of the post, so you cannot edit it. </h1>";
+    }
+?>
 <hr>
 <p>Navigation</p>
 <?php

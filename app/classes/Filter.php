@@ -4,8 +4,8 @@ class Filter {
         if (!is_string($name)) {
             throw new InvalidArgumentException("Name must be a string.");
         }
-        if (preg_match('/[^a-zA-Z\s]/', $name)) {
-            throw new InvalidArgumentException('Invalid input detected. Only letters and spaces are allowed.');
+        if (preg_match('/[^a-zA-Z0-9\s]/', $name)) {
+            throw new InvalidArgumentException('Invalid input detected. Only letters, numbers and spaces are allowed.');
         }
         return addslashes(htmlspecialchars(trim($name)));
     }
@@ -36,8 +36,8 @@ class Filter {
         if (!is_string($input)) {
             throw new InvalidArgumentException("Input must be a string.");
         }
-        if (preg_match('/[^a-zA-Z\s]/', $input)) {
-            throw new InvalidArgumentException('Invalid input detected. Only letters and spaces are allowed.');
+        if (preg_match('/[^a-zA-Z0-9\s]/', $input)) {
+            throw new InvalidArgumentException('Invalid input detected. Only letters, numbers and spaces are allowed.');
         }
         return addslashes(htmlspecialchars(trim($input)));
     }

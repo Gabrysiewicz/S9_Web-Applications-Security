@@ -20,33 +20,61 @@ class Pdo_{
             die();
         }
     }
-    public function add_user($login, $email, $password){
-        $login=$this->purifier->purify($login);
-        $email=$this->purifier->purify($email);
+    public function add_user($login, $email, $password) {
+        $login = $this->purifier->purify($login);
+        $email = $this->purifier->purify($email);
         $salt = bin2hex(random_bytes(8)); // 16 characters
+    
         try {
-            $sql = "INSERT INTO `user`( 
-            `login`, `email`, `hash`, `salt`, `id_status`, `password_form`, `name`, `surname`) 
-            VALUES (
-            :login, :email, :hash, :salt, :id_status, :password_form, :name, :surname)";
-            //hash password
+            // Start transaction
+            $this->pdo->beginTransaction();
+    
+            // Insert user into the `user` table
+            $sql = "INSERT INTO `user` (
+                `login`, `email`, `hash`, `salt`, `id_status`, `password_form`, `name`, `surname`
+            ) VALUES (
+                :login, :email, :hash, :salt, :id_status, :password_form, :name, :surname
+            )";
+    
             $hashedPassword = hash('sha512', $salt . $password);
-
+    
             $data = [
                 'login' => $login,
                 'email' => $email,
                 'hash' => $hashedPassword,
                 'salt' => $salt,
-                'id_status'=>'1',
-                'password_form'=>'1',
+                'id_status' => '1',
+                'password_form' => '1',
                 'name' => 'changeLater',
                 'surname' => 'changeLater'
             ];
-            $this->pdo->prepare($sql)->execute($data);
+    
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($data);
+    
+            // Get the newly created user's ID
+            $userId = $this->pdo->lastInsertId();
+    
+            // Insert the default role into the `user_role` table
+            $roleSql = "INSERT INTO `user_role` (`id_role`, `id_user`, `issue_time`) VALUES (:id_role, :id_user, :issue_time)";
+            $roleData = [
+                'id_role' => 1, // Default role ID
+                'id_user' => $userId,
+                'issue_time' => date('Y-m-d') // Current date
+            ];
+    
+            $this->pdo->prepare($roleSql)->execute($roleData);
+    
+            // Commit transaction
+            $this->pdo->commit();
+    
         } catch (Exception $e) {
+            // Rollback transaction in case of error
+            $this->pdo->rollBack();
             echo "Adding new user failed: " . $e->getMessage();
         }
     }
+    
     public function log_user_in($login, $password){
         $login = $this->purifier->purify($login);
 
@@ -198,13 +226,14 @@ class Pdo_{
         $login=$this->purifier->purify($login);
         $code=$this->purifier->purify($code);
         try {
-            $sql="SELECT user.id,login,sms_code,code_timelife,role_name FROM user INNER JOIN user_role on user.id = user_role.id_user INNER JOIN role ON user_role.id_role = role.id WHERE login=:login";
+            $sql="SELECT user.id as user_id,login,sms_code,code_timelife,role_name FROM user INNER JOIN user_role on user.id = user_role.id_user INNER JOIN role ON user_role.id_role = role.id WHERE login=:login";
             $stmt= $this->pdo->prepare($sql);
             $stmt->execute(['login'=>$login]);
             $user_data=$stmt->fetch();
             if($code==$user_data['sms_code'] && time()< strtotime($user_data['code_timelife'])){
                 // Set session variables for successful login
                 $_SESSION['logged_in'] = true;
+                $_SESSION['user_id'] = $user_data['user_id'];
                 $_SESSION['login'] = $user_data['login'];
                 $_SESSION['role'] = $user_data['role_name'];
                 $_SESSION['session_expiration'] = time() + 300; // 5 minutes from now
@@ -307,6 +336,23 @@ class Pdo_{
     public function prepare($sql) {
         return $this->pdo->prepare($sql);
     }
-    
+    public function addMessage($name, $type, $content, $user_id) {
+        $filtered_name = Filter::filter_name($name);
+        $filtered_type = Filter::filter_type($type);
+        $filtered_content = Filter::filter_general($content);
+
+        $sql = "INSERT INTO message (`name`, `type`, `message`, `deleted`, `user_id`) VALUES (:name, :type, :content, 0, :user_id)";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':name', $filtered_name);
+            $stmt->bindParam(':type', $filtered_type);
+            $stmt->bindParam(':content', $filtered_content);
+            $stmt->bindParam(':user_id', $user_id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo "Add message failed: " . $e->getMessage();
+            return false;
+        }
+    }
     
 }
