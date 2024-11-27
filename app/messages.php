@@ -1,5 +1,6 @@
 <?php
 session_start();
+error_reporting(0);
 
 include_once "classes/Page.php";
 include_once "classes/Pdo_.php";

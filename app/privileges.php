@@ -1,5 +1,7 @@
 <?php
 session_start();  // Initialize session at the beginning of the script
+error_reporting(0);
+
 include_once "classes/Page.php";
 include_once "classes/Pdo_.php";
 Page::display_header("Main page");
