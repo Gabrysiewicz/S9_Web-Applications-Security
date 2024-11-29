@@ -46,11 +46,25 @@ if (isset($_REQUEST['log_user_in_2FA'])) {
 if (isset($_REQUEST['verify_user'])) {
     $code = $_REQUEST['code'];
     $login = $_SESSION['login'];
-    if( $pdo->log_2F_step2($login, $code) ){
-        echo 'You are logged in as: '.$_SESSION['login'];
+    if ($pdo->log_2F_step2($login, $code)) {
+        echo 'You are logged in as: ' . $_SESSION['login'];
         $_SESSION['logged'] = 'YES';
-    }
+        $pdo->log_user_event($_SESSION['user_id'], 'login');  // Use $pdo to call the method
+    }    
 }
+// Logout
+if (isset($_POST['logout'])) {
+    // Log user event for logout
+    if (isset($_SESSION['user_id'])) {
+        $pdo->log_user_event($_SESSION['user_id'], 'logout');
+    }
+
+    // Unset session variables and destroy the session
+    session_unset();
+    session_destroy();
+
+}
+
 ?>
     <h2> Main page</h2>
     <hr/>
@@ -148,6 +162,8 @@ if (isset($_REQUEST['verify_user'])) {
     </form>
     <?php
         Page::display_navigation($_SESSION['role']);
+        Page::display_logout_button();
+
     ?>
     </body>
 </html>

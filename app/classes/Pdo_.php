@@ -20,6 +20,19 @@ class Pdo_{
             die();
         }
     }
+    // Assuming you have a PDO connection already set up
+    public function log_user_event($user_id, $event_type) {
+        $ip_address = $_SERVER['REMOTE_ADDR'];  // Get the user's IP address
+        
+        $query = "INSERT INTO user_session_log (user_id, event_type, ip_address) VALUES (:user_id, :event_type, :ip_address)";
+        $stmt = $this->pdo->prepare($query);
+        
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':event_type', $event_type, PDO::PARAM_STR);
+        $stmt->bindParam(':ip_address', $ip_address, PDO::PARAM_STR);
+        
+        $stmt->execute();
+    }
     public function add_user($login, $email, $password) {
         $login = $this->purifier->purify($login);
         $email = $this->purifier->purify($email);
@@ -59,14 +72,15 @@ class Pdo_{
             $roleSql = "INSERT INTO `user_role` (`id_role`, `id_user`, `issue_time`) VALUES (:id_role, :id_user, :issue_time)";
             $roleData = [
                 'id_role' => 1, // Default role ID
-                'id_user' => $userId,
-                'issue_time' => date('Y-m-d') // Current date
+                'id_user' => $userId
             ];
     
             $this->pdo->prepare($roleSql)->execute($roleData);
     
             // Commit transaction
             $this->pdo->commit();
+            $pdo->log_user_activity($userId, 'add', 'user', $this->pdo->lastInsertId());
+
     
         } catch (Exception $e) {
             // Rollback transaction in case of error
@@ -74,7 +88,7 @@ class Pdo_{
             echo "Adding new user failed: " . $e->getMessage();
         }
     }
-    
+
     public function log_user_in($login, $password){
         $login = $this->purifier->purify($login);
 
@@ -249,16 +263,24 @@ class Pdo_{
         }
     }
     public function check_session_expiration() {
+        // Check if the session is active
         if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+            // Check for session expiration
             if (isset($_SESSION['session_expiration']) && time() > $_SESSION['session_expiration']) {
-                session_unset();
-                session_destroy();
+                // Log the user event and expire the session
+                $this->log_user_event($_SESSION['user_id'], 'logout');
+                
+                session_unset();  // Unset session variables
+                session_destroy();  // Destroy the session
+                header("Location: login.php");  // Redirect to login page after session expiration
                 exit();
             } else {
-                $_SESSION['session_expiration'] = time() + 300;
+                // Update session expiration time (e.g., extend session for another 5 minutes)
+                $_SESSION['session_expiration'] = time() + 300; 
             }
         }
     }
+    
     public function refresh_session_expiration(){
         if(isset($_SESSION["login"]) && isset($_SESSION["code"])){
             $login=$this->purifier->purify($_SESSION["login"]);
@@ -340,19 +362,56 @@ class Pdo_{
         $filtered_name = Filter::filter_name($name);
         $filtered_type = Filter::filter_type($type);
         $filtered_content = Filter::filter_general($content);
-
+    
         $sql = "INSERT INTO message (`name`, `type`, `message`, `deleted`, `user_id`) VALUES (:name, :type, :content, 0, :user_id)";
-        try {
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':name', $filtered_name);
-            $stmt->bindParam(':type', $filtered_type);
-            $stmt->bindParam(':content', $filtered_content);
-            $stmt->bindParam(':user_id', $user_id);
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            echo "Add message failed: " . $e->getMessage();
-            return false;
-        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':name', $filtered_name);
+        $stmt->bindParam(':type', $filtered_type);
+        $stmt->bindParam(':content', $filtered_content);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        return $this->pdo->lastInsertId();
+    }
+    public function updateMessage($id, $name, $type, $content) {
+        $filtered_name = Filter::filter_name($name);
+        $filtered_type = Filter::filter_type($type);
+        $filtered_content = Filter::filter_general($content);
+    
+        $sql = "UPDATE message SET name = ?, type = ?, message = ? WHERE id = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(1, $filtered_name);
+        $stmt->bindParam(2, $filtered_type);
+        $stmt->bindParam(3, $filtered_content);
+        $stmt->bindParam(4, $id);
+        return $stmt->execute(); // Return success/failure
     }
     
+
+    public function __destruct() {
+        $this->pdo = null; // Close the PDO connection
+    }
+    public function log_user_activity($user_id, $action_type, $table_name, $record_id, $previous_data = null, $new_data = null) {
+        $sql = "INSERT INTO user_activity_log (user_id, action_type, table_name, record_id, previous_data, new_data) 
+                VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$user_id, $action_type, $table_name, $record_id, $previous_data, $new_data]);
+    }
+
+    public function get_user_activity($user_id = null) {
+        // SQL query to get all activity logs (or filter by user if a user_id is passed)
+        $sql = "SELECT * FROM user_activity_log ORDER BY timestamp DESC";
+        if ($user_id) {
+            $sql = "SELECT * FROM user_activity_log WHERE user_id = ? ORDER BY timestamp DESC";
+        }
+        
+        $stmt = $this->pdo->prepare($sql);
+        if ($user_id) {
+            $stmt->execute([$user_id]);
+        } else {
+            $stmt->execute();
+        }
+        return $stmt->fetchAll(PDO::FETCH_OBJ); // Return results as an object
+    }
+    
+
 }

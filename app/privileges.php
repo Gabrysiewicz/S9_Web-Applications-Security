@@ -157,6 +157,38 @@ function display_permissions_table_5($permissions) {
     }
     echo "</table>";
 }
+// Fetch user activities if admin is logged in
+if (isset($_POST['see_activity_log'])) {
+    $activities = $pdo->get_user_activity();
+}
+function display_user_activity($activities) {
+    echo "<table>
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Action Type</th>
+                    <th>Table</th>
+                    <th>Record ID</th>
+                    <th>Previous Data</th>
+                    <th>New Data</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>";
+    foreach ($activities as $activity) {
+        echo "<tr>
+                <td>" . $activity->user_id . "</td>
+                <td>" . $activity->action_type . "</td>
+                <td>" . $activity->table_name . "</td>
+                <td>" . $activity->record_id . "</td>
+                <td>" . $activity->previous_data . "</td>
+                <td>" . $activity->new_data . "</td>
+                <td>" . $activity->timestamp . "</td>
+            </tr>";
+    }
+    echo "</tbody></table>";
+}
+
 ?>
 <html>
     <head>
@@ -245,6 +277,16 @@ if ($_SESSION["role"] === 'moderator' || $_SESSION["role"] === 'admin') { ?>
                     </form>
                 </td>
             </tr>
+            <?php if ($_SESSION["role"] === 'admin') { ?>
+            <tr> 
+                <td> Displaying a activity log </td> 
+                <td>
+                    <form method="post" action="privileges.php">
+                        <input type="submit" value="See" id="see" name="see_activity_log">
+                    </form>
+                </td>
+            </tr>
+            <?php } ?>
         </table>
     </section>
     <section id="display">
@@ -259,13 +301,14 @@ if ($_SESSION["role"] === 'moderator' || $_SESSION["role"] === 'admin') { ?>
             display_permissions_table_4($_SESSION["permissions"]);
         } else if (isset($_POST['see_permissions_5'])) {
             display_permissions_table_5($_SESSION["permissions"]);
+        } else if (isset($_POST['see_activity_log'])) {
+            display_user_activity($activities);
         } else {
             echo "<p>No permissions available to display.</p>";
         }
 
     ?>
-</section>
-
+    </section>
     </main>
     <?php
         Page::display_navigation($_SESSION['role']);

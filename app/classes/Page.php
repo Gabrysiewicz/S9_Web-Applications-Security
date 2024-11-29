@@ -19,7 +19,18 @@ class Page {
         // Display "Privileges" link only for moderators and admins
         if ($userRole === 'moderator' || $userRole === 'admin') { ?>
             <a href="privileges.php">Privileges</a><br>
-        <?php } 
+        <?php 
+        }
+    }
+
+    static function display_logout_button() {
+        // Check if the user is logged in
+        if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) { ?>
+            <form method="post" action="index.php">
+                <input type="submit" value="Logout" name="logout" />
+            </form>
+        <?php 
+        }
     }
 }
 ?>

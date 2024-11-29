@@ -24,12 +24,13 @@ if (isset($_POST['add_message'])) {
         $allowed_types = ['public', 'private'];
 
         try {
-            if (!$pdo->addMessage($name, $type, $content, $user_id)) {
-                echo "<p style='color:red;'>Adding new message failed.</p>";
+            $message_id = $pdo->addMessage($name, $type, $content, $user_id);
+            if ($message_id) {
+                $pdo->log_user_activity($user_id, 'add', 'message', $message_id);
             }
-        } catch (InvalidArgumentException $e) {
-            echo "<p style='color:red;'>{$e->getMessage()}</p>";
-        }
+        } catch (PDOException $e) {
+            echo "<p style='color:red;'>Failed to add message: " . htmlspecialchars($e->getMessage()) . "</p>";
+        }        
     }else{
         echo "<h1 color='red'> YOU MUST BE LOGGED IN TO POST MESSAGES </h1>";
     }
@@ -37,33 +38,61 @@ if (isset($_POST['add_message'])) {
 }
 
 // Editing an existing message
+// Editing an existing message
 if (isset($_POST['update_message'])) {
-    $id = $_POST['id'];
+    $id = (int)$_POST['id']; // Cast to int for security
     $name = $_POST['name'];
     $type = $_POST['type'];
     $content = $_POST['content'];
 
     try {
-        if ($pdo->updateMessage($id, $name, $type, $content)) {
-            echo "<p>Message updated successfully.</p>";
+        // Fetch existing message for logging purposes
+        $stmt = $pdo->prepare("SELECT message FROM message WHERE id = ?");
+        $stmt->execute([$id]);
+        $existing_message = $stmt->fetchColumn();
+
+        if ($existing_message === false) {
+            echo "<p style='color:red;'>Message not found.</p>";
         } else {
-            echo "<p style='color:red;'>Updating message failed.</p>";
+            // Update the message
+            if ($pdo->updateMessage($id, $name, $type, $content)) {
+                echo "<p>Message updated successfully.</p>";
+
+                // Log the user activity
+                $pdo->log_user_activity($_SESSION["user_id"], 'update', 'message', $id, $existing_message, $content);
+            } else {
+                echo "<p style='color:red;'>Updating message failed.</p>";
+            }
         }
-    } catch (InvalidArgumentException $e) {
-        echo "<p style='color:red;'>{$e->getMessage()}</p>";
+    } catch (PDOException $e) {
+        echo "<p style='color:red;'>Error: " . htmlspecialchars($e->getMessage()) . "</p>";
     }
 }
+
 // Delete an existing message
 if (isset($_GET['delete_message'])) {
-    // Check if the user has the required role
     if ($_SESSION['role'] === 'moderator' || $_SESSION['role'] === 'admin' || (isset($_SESSION['user_id']) && $_SESSION['user_id'] == $_GET['owner'])) {
-        $id = (int)$_GET['delete_message']; // Cast to int for security
+        $id = (int)$_GET['delete_message'];
+
+        // Validate user ID
+        if (!isset($_SESSION["user_id"]) || !is_numeric($_SESSION["user_id"])) {
+            echo "<p style='color:red;'>Invalid user session. Please log in again.</p>";
+            exit;
+        }
+        $user_id = (int)$_SESSION["user_id"];
 
         try {
+            // Fetch the existing message content
+            $stmt = $pdo->prepare("SELECT message FROM message WHERE id = ?");
+            $stmt->execute([$id]);
+            $existing_message = $stmt->fetchColumn();
+
+            // Mark the message as deleted
             $sql = "UPDATE message SET deleted = 1 WHERE id = ?";
             $stmt = $pdo->prepare($sql);
             if ($stmt->execute([$id])) {
                 echo "<p style='color:green;'>Message deleted successfully.</p>";
+                $pdo->log_user_activity($user_id, 'delete', 'message', $id, $existing_message, 'deleted');
             } else {
                 echo "<p style='color:red;'>Failed to delete message.</p>";
             }
@@ -75,7 +104,6 @@ if (isset($_GET['delete_message'])) {
     }
 }
 
-
 ?>
 <p> Messages </p>
 <ol>
@@ -86,9 +114,13 @@ if (isset($_GET['delete_message'])) {
     if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == @$_GET['from_user']){
         $sql = "SELECT * FROM message WHERE deleted = 0 and user_id = ".$_SESSION['user_id'];
         $messages = $pdo->select($sql);
+        $pdo->log_user_activity($_SESSION['user_id'], 'view', 'message', null);
     }else{
         $sql = "SELECT * FROM message WHERE deleted = 0";
         $messages = $pdo->select($sql);
+        if(isset($_SESSION['user_id'])){
+            $pdo->log_user_activity($_SESSION['user_id'], 'view', 'message', null);
+        }
     }
     if(isset($messages) && $messages != null) {
         echo "<table>";
