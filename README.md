@@ -2,203 +2,261 @@
   <tr> <td colspan='3' align='center' width='884px'> Web Applications Security </td> </tr>
   <tr> <td colspan="3" align='center'> <img src='https://github.com/Gabrysiewicz/Programowanie-aplikacji-w-chmurze-obliczeniowe/blob/main/logo_politechniki_lubelskiej.jpg' width="400px" height="400px"></td> </tr>
   <tr> <td> Kamil Gabrysiewicz </td> <td> Index: 95400 </td> <td> Grupa: 2.1 </td> </tr>  
-  <tr> <td> Wtorek 11:45-13:15 </td> <td> Semestr 2 </td> <td>Laboratorium 5</td></tr>  
+  <tr> <td> Wtorek 11:45-13:15 </td> <td> Semestr 2 </td> <td>Laboratorium 7</td></tr>  
 </table>
 
 
-# Task 5.1.
-Develop functionalities for managing permissions:
-- displaying a list of permissions in the system,
-- displaying a list of user permissions with the option of adding and removing permissions,
-- displaying a list of roles in the system with the option of adding or removing roles,
-- displaying a list of permissions assigned to the role with the option of adding and removing permissions,
-- displaying a list of user roles with t;he option of adding or removing roles for the user.
+# Task 7.1.
+Add the functionality of recording user login and logout times to the application developed during previous labs.
 
-<hr/>
-
+Structure of table responsible for holding loggin related data
 ```
-use mydb;
-
-CREATE TABLE mydb.user (
-    id INT(11) PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL,
-    surname VARCHAR(40) NOT NULL,
-    phone VARCHAR(12),
-    login VARCHAR(30) COLLATE utf8_polish_ci NOT NULL,
-    email VARCHAR(60) COLLATE utf8_polish_ci NOT NULL,
-    hash VARCHAR(255) COLLATE utf8_polish_ci NOT NULL COMMENT 'password hash or HMAC value',
-    salt BLOB DEFAULT NULL COMMENT 'salt to use in password hashing',
-    sms_code VARCHAR(6) COLLATE utf8_polish_ci DEFAULT NULL COMMENT 'security code sent via sms or e-mail',
-    code_timelife TIMESTAMP NULL DEFAULT NULL COMMENT 'timelife of security code',
-    security_question VARCHAR(255) COLLATE utf8_polish_ci DEFAULT NULL COMMENT 'additional security question used while password recovering',
-    answer VARCHAR(255) COLLATE utf8_polish_ci DEFAULT NULL COMMENT 'security question answer',
-    lockout_time TIMESTAMP NULL DEFAULT NULL COMMENT 'time to which user account is blocked',
-    session_id BLOB DEFAULT NULL COMMENT 'user session identifier',
-    id_status INT(11) NOT NULL COMMENT 'account status',
-    password_form INT(11) NOT NULL DEFAULT 1 COMMENT '1- SHA512, 2-SHA512+salt, 3- HMAC'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
-
-
-CREATE TABLE mydb.privilege (
-    id INT PRIMARY KEY,
-    id_parent_privilege INT,
-    name VARCHAR(100) NOT NULL,
-    active TINYINT NOT NULL,
-    asset_url VARCHAR(200),
-    FOREIGN KEY (id_parent_privilege) REFERENCES mydb.privilege(id)
-);
-
-CREATE TABLE mydb.role (
-    id SMALLINT PRIMARY KEY,
-    role_name VARCHAR(30) NOT NULL,
-    description TEXT
-);
-
-CREATE TABLE mydb.user_role (
-    id INT PRIMARY KEY,
-    id_role SMALLINT,
-    id_user INT,
-    issue_time DATE,
-    expire_time DATE,
-    FOREIGN KEY (id_role) REFERENCES mydb.role(id),
-    FOREIGN KEY (id_user) REFERENCES mydb.user(id)
-);
-
-
-CREATE TABLE mydb.role_privilege (
-    id INT PRIMARY KEY,
-    id_role SMALLINT,
-    id_privilege INT,
-    issue_time DATE,
-    expire_time DATE,
-    FOREIGN KEY (id_role) REFERENCES mydb.role(id),
-    FOREIGN KEY (id_privilege) REFERENCES mydb.privilege(id)
-);
-
-CREATE TABLE mydb.user_privilege (
-    id INT PRIMARY KEY,
-    id_user INT,
-    id_privilege INT,
-    FOREIGN KEY (id_user) REFERENCES mydb.user(id),
-    FOREIGN KEY (id_privilege) REFERENCES mydb.privilege(id)
-);
-
-
-INSERT INTO mydb.privilege (id, name, active)
-VALUES (100, 'add message', 1);
-
-INSERT INTO mydb.privilege (id, name, active)
-VALUES (102, 'delete message', 1);
-
-INSERT INTO mydb.privilege (id, name, active)
-VALUES (103, 'display private', 1);
-
-INSERT INTO mydb.privilege (id, name, active)
-VALUES (101, 'edit message', 1);
-
-
-CREATE TABLE `message` (
- `id` int(11) NOT NULL,
- `name` varchar(255) COLLATE utf8_polish_ci NOT NULL COMMENT 'name of the message',
- `type` varchar(20) COLLATE utf8_polish_ci DEFAULT NULL COMMENT 'type of the message
-(private/public)',
- `message` varchar(2000) COLLATE utf8_polish_ci NOT NULL COMMENT 'message text',
- `deleted` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'existing message - 0, deleted - 1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
-
-INSERT INTO `message` (`id`, `name`, `type`, `message`, `deleted`) VALUES
-(1, 'New Intel technology', 'public', 'Intel has announced a new processor for desktops', 0),
-(2, 'Intel shares raising', 'private', 'brokers announce: Intel shares will go up!', 0),
-(3, 'New graphic card from NVidia', 'public', 'NVidia has announced a new graphic card for desktops', 0),
-(4, 'Airplane crash', 'public', 'A passenger plane has crashed in Europe', 0),
-(5, 'Coronavirus', 'private', 'A new version of virus was found!', 0),
-(6, 'Bitcoin price raises', 'public', 'Price of bitcoin reaches new record.', 0),
-(9, 'New Windows announced', 'public', 'A new version of windows was announced. Present buyers of Widows
-10 can update the system to the newest version for free.', 0);
-
-ALTER TABLE `message`
- ADD PRIMARY KEY (`id`);
-ALTER TABLE `message`
- MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
++------------+------------------------+------+-----+-------------------+-------------------+
+| Field      | Type                   | Null | Key | Default           | Extra             |
++------------+------------------------+------+-----+-------------------+-------------------+
+| id         | int                    | NO   | PRI | NULL              | auto_increment    |
+| user_id    | int                    | NO   | MUL | NULL              |                   |
+| event_type | enum('login','logout') | NO   |     | NULL              |                   |
+| event_time | timestamp              | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
+| ip_address | varchar(45)            | YES  |     | NULL              |                   |
++------------+------------------------+------+-----+-------------------+-------------------+
 ```
 
-![Task 5.1 a](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_1a.png)
+Possible content
+```
++----+---------+------------+---------------------+------------+
+| id | user_id | event_type | event_time          | ip_address |
++----+---------+------------+---------------------+------------+
+| 17 |       1 | login      | 2024-11-29 14:20:16 | 172.19.0.1 |
+| 18 |       1 | logout     | 2024-11-29 14:23:22 | 172.19.0.1 |
+| 19 |       1 | login      | 2024-11-29 14:27:32 | 172.19.0.1 |
+| 20 |       3 | login      | 2024-11-29 14:29:25 | 172.19.0.1 |
+| 21 |       3 | logout     | 2024-11-29 14:49:29 | 172.19.0.1 |
+| 22 |       3 | login      | 2024-11-29 14:49:37 | 172.19.0.1 |
+| 23 |       3 | logout     | 2024-11-29 21:06:42 | 172.19.0.1 |
+| 24 |       3 | login      | 2024-11-29 21:07:01 | 172.19.0.1 |
+| 25 |       1 | login      | 2024-12-03 11:06:41 | 172.19.0.1 |
+| 26 |       1 | logout     | 2024-12-03 11:12:32 | 172.19.0.1 |
+| 27 |       3 | login      | 2024-12-03 11:13:09 | 172.19.0.1 |
+| 28 |       3 | logout     | 2024-12-03 11:19:14 | 172.19.0.1 |
+| 29 |       1 | login      | 2024-12-03 11:19:30 | 172.19.0.1 |
+| 30 |       1 | logout     | 2024-12-03 11:30:03 | 172.19.0.1 |
+| 31 |       1 | login      | 2024-12-03 11:30:20 | 172.19.0.1 |
+| 32 |       1 | logout     | 2024-12-03 11:39:39 | 172.19.0.1 |
+| 33 |       3 | login      | 2024-12-03 11:39:49 | 172.19.0.1 |
+| 34 |       3 | logout     | 2024-12-03 11:53:02 | 172.19.0.1 |
+| 35 |       3 | login      | 2024-12-03 11:53:31 | 172.19.0.1 |
++----+---------+------------+---------------------+------------+
+```
 
-![Task 5.1 b](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_1b.png)
+Function in Pdo_.php responsible for recording user session log activity, its called during login or logut.
+```
+public function log_user_event($user_id, $event_type) {
+        $ip_address = $_SERVER['REMOTE_ADDR'];
+        
+        $query = "INSERT INTO user_session_log (user_id, event_type, ip_address) VALUES (:user_id, :event_type, :ip_address)";
+        $stmt = $this->pdo->prepare($query);
+        
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':event_type', $event_type, PDO::PARAM_STR);
+        $stmt->bindParam(':ip_address', $ip_address, PDO::PARAM_STR);
+        
+        $stmt->execute();
+    }
+```
 
-![Task 5.1 c](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_1c.png)
+Use of log_user_event()
+```
+// Log user in with 2FA
+if (isset($_REQUEST['verify_user'])) {
+    $code = $_REQUEST['code'];
+    $login = $_SESSION['login'];
+    if ($pdo->log_2F_step2($login, $code)) {
+        echo 'You are logged in as: ' . $_SESSION['login'];
+        $_SESSION['logged'] = 'YES';
+        $pdo->log_user_event($_SESSION['user_id'], 'login');  // Log user event for login
+    }    
+}
+// Logout
+if (isset($_POST['logout'])) {
+    // Log user event for logout
+    if (isset($_SESSION['user_id'])) {
+        $pdo->log_user_event($_SESSION['user_id'], 'logout');
+    }
+    // Unset session variables and destroy the session
+    session_unset();
+    session_destroy();
+}
+```
 
-![Task 5.1 d](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_1d.png)
 
-![Task 5.1 e](https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_1e.png)
+# Task 7.2.
+### Extend the application with the functionality of recording user activity:
+### Register what data was modified
+### Record what data the user displayed (just write down the record numbers and table name)
 
+My Application stores history of what user views, add, edits and deletes in the same table `user_activity_log`
 
+user_activity_log table structure
+```
++---------------+--------------------------------------+------+-----+-------------------+-------------------+
+| Field         | Type                                 | Null | Key | Default           | Extra             |
++---------------+--------------------------------------+------+-----+-------------------+-------------------+
+| id            | int                                  | NO   | PRI | NULL              | auto_increment    |
+| user_id       | int                                  | NO   | MUL | NULL              |                   |
+| action_type   | enum('view','add','delete','update') | NO   |     | NULL              |                   |
+| table_name    | varchar(50)                          | NO   |     | NULL              |                   |
+| record_id     | int                                  | YES  |     | NULL              |                   |
+| previous_data | text                                 | YES  |     | NULL              |                   |
+| new_data      | text                                 | YES  |     | NULL              |                   |
+| timestamp     | timestamp                            | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
++---------------+--------------------------------------+------+-----+-------------------+-------------------+
+```
 
-# Task 5.2.
-Verify the list of effective user permissions - create a set of permissions for the logging in
-user, resulting from his permissions and the permissions resulting from the roles assigned to
-him. Save a list of permissions in the session. When displaying a page, only show the user the
-items for which they have permission.
-<h4> View for unlogged user, privileges are hidden </h4>
-<p align="center">
-  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2a.png" />
+Example content
+```
++----+---------+-------------+------------+-----------+---------------+----------+---------------------+
+| id | user_id | action_type | table_name | record_id | previous_data | new_data | timestamp           |
++----+---------+-------------+------------+-----------+---------------+----------+---------------------+
+|  1 |       1 | view        | message    |      NULL | NULL          | NULL     | 2024-11-29 11:19:11 |
+|  2 |       1 | view        | message    |      NULL | NULL          | NULL     | 2024-11-29 11:19:47 |
+|  3 |       1 | view        | message    |      NULL | NULL          | NULL     | 2024-11-29 12:21:36 |
+|  4 |       1 | view        | message    |      NULL | NULL          | NULL     | 2024-11-29 13:20:00 |
+|  5 |       1 | add         | message    |        15 | NULL          | NULL     | 2024-11-29 13:20:06 |
++----+---------+-------------+------------+-----------+---------------+----------+---------------------+
+```
+
+Function responsible for adding user activity to table
+```
+public function log_user_activity($user_id, $action_type, $table_name, $record_id, $previous_data = null, $new_data = null) {
+    $sql = "INSERT INTO user_activity_log (user_id, action_type, table_name, record_id, previous_data, new_data) 
+            VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute([$user_id, $action_type, $table_name, $record_id, $previous_data, $new_data]);
+}
+```
+
+For an example log_user_activity is called during message activities such as add, update and delete of an message
+```
+// Adding a new message
+if (isset($_POST['add_message'])) {
+    /* Some code */
+        try {
+            $message_id = $pdo->addMessage($name, $type, $content, $user_id);
+            if ($message_id) {
+                $pdo->log_user_activity($user_id, 'add', 'message', $message_id);
+            }
+        } catch (PDOException $e) {
+            echo "<p style='color:red;'>Failed to add message: " . htmlspecialchars($e->getMessage()) . "</p>";
+        }        
+    /* Some code */
+}
+
+// Editing an existing message
+if (isset($_POST['update_message'])) {
+    /* Some code */
+            // Update the message
+            if ($pdo->updateMessage($id, $name, $type, $content)) {
+                echo "<p>Message updated successfully.</p>";
+
+                // Log the user activity
+                $pdo->log_user_activity($_SESSION["user_id"], 'update', 'message', $id, $existing_message, $content);
+            } else {
+                echo "<p style='color:red;'>Updating message failed.</p>";
+            }
+  /* Some code */
+}
+
+// Delete an existing message
+if (isset($_GET['delete_message'])) {
+    /* Some code */
+    if ($stmt->execute([$id])) {
+      echo "<p style='color:green;'>Message deleted successfully.</p>";
+      $pdo->log_user_activity($user_id, 'delete', 'message', $id, $existing_message, 'deleted');
+    } else {
+      echo "<p style='color:red;'>Failed to delete message.</p>";
+    }
+    /* Some code */
+}
+```
+
+### Add the ability to display user activity (only the administrator should have access to this function)
+
+<p align='center'>
+  <img src="#" >
 </p>
 
-<h4> Logging as a "test" user which has a role of "user" which is default and has the least amount of privileges</h4>
-<p align="center">
-  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2b.png" />
+<p align='center'>
+  <img src="#" >
 </p>
 
-<h4> Logged in as "user" role, the privileges navigation is hidden </h4>
-<p align="center">
-  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2c.png" />
-</p>
+### Add the ability to restore the previous version of a selected record – display the history of changes made for the selected record and enable the restoration of the selected version of data.
 
-<h4> The dafault "user" might want to try access localhost/privileges.php but the content is rendered only for privileged roles such as "moderator" and "admin" </h4>
-<p align="center">
-  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2d.png" />
-</p>
+To store updates for each record, I decided to create a table `message_history` and with the use of triggers, user actions will automaticlly be stored in new table.
 
-<h4> Loggin in as a admin with "admin" role </h4>
-<p align="center">
-  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2e.png" />
-</p>
+Table for record history
+```
+CREATE TABLE message_history (
+    history_id INT AUTO_INCREMENT PRIMARY KEY,
+    message_id INT NOT NULL,
+    name VARCHAR(255),
+    type VARCHAR(50),
+    message TEXT,
+    deleted TINYINT(1),
+    user_id INT,
+    action_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (message_id) REFERENCES message(id)
+);
+```
 
-<h4> Logged in as admin, the privileges navigation is visible and admin can acceess its content </h4>
-<p align="center">
-  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2f.png" />
-</p>
+Trigger for Update of message
+```
+DELIMITER $$
 
-<h4> Admin has access to privileges.php </h4>
-<p align="center">
-  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab5/img/Task5_2g.png" />
-</p>
+CREATE TRIGGER before_message_update
+BEFORE UPDATE ON message
+FOR EACH ROW
+BEGIN
+    INSERT INTO message_history (message_id, name, type, message, deleted, user_id, action_date)
+    VALUES (OLD.id, OLD.name, OLD.type, OLD.message, OLD.deleted, OLD.user_id, NOW());
+END$$
 
-<hr/>
-
-# Task 5.3.
-Add message editing and deleting functions to your application. Make these functionalities
-available only to authorized users.
-
-<hr/>
+DELIMITER ;
 
 ```
-SELECT DISTINCT
-    r.role_name AS role,
-    r.description AS role_description,
-    p.name AS privilege,
-    rp.issue_time,
-    rp.expire_time
-FROM 
-    role r
-JOIN 
-    role_privilege rp ON r.id = rp.id_role
-JOIN 
-    privilege p ON rp.id_privilege = p.id
-WHERE 
-    LOWER(p.name) LIKE 'add%' OR LOWER(p.name) LIKE 'delete%' 
-ORDER BY 
-    r.role_name, p.name;
 
+Trigger for Delete of message
+```
+DELIMITER $$
+
+CREATE TRIGGER before_message_delete
+BEFORE DELETE ON message
+FOR EACH ROW
+BEGIN
+    INSERT INTO message_history (message_id, name, type, message, deleted, user_id, action_date)
+    VALUES (OLD.id, OLD.name, OLD.type, OLD.message, OLD.deleted, OLD.user_id, NOW());
+END$$
+
+DELIMITER ;
 
 ```
+
+<p align='center'>
+  <img src="#" >
+</p>
+
+<p align='center'>
+  <img src="#" >
+</p>
+
+<p align='center'>
+  <img src="#" >
+</p>
+
+<p align='center'>
+  <img src="#" >
+</p>
+
+<p align='center'>
+  <img src="#" >
+</p>

@@ -40,6 +40,10 @@ if ($message_id > 0) {
     echo "<p style='color:red;'>Invalid message ID.</p>";
     exit();
 }
+
+if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == @$_GET['from_user']){
+    $pdo->log_user_activity($_SESSION['user_id'], 'view', 'message_edit', null);
+}
 ?>
 
 <h2>Edit Message</h2>

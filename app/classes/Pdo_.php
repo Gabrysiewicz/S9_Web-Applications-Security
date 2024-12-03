@@ -20,9 +20,15 @@ class Pdo_{
             die();
         }
     }
+    public function __destruct() {
+        $this->pdo = null; // Close the PDO connection
+    }
+    public function prepare($sql) {
+        return $this->pdo->prepare($sql);
+    }
     // Assuming you have a PDO connection already set up
     public function log_user_event($user_id, $event_type) {
-        $ip_address = $_SERVER['REMOTE_ADDR'];  // Get the user's IP address
+        $ip_address = $_SERVER['REMOTE_ADDR'];
         
         $query = "INSERT INTO user_session_log (user_id, event_type, ip_address) VALUES (:user_id, :event_type, :ip_address)";
         $stmt = $this->pdo->prepare($query);
@@ -355,9 +361,7 @@ class Pdo_{
             return false;
         }
     }
-    public function prepare($sql) {
-        return $this->pdo->prepare($sql);
-    }
+    
     public function addMessage($name, $type, $content, $user_id) {
         $filtered_name = Filter::filter_name($name);
         $filtered_type = Filter::filter_type($type);
@@ -372,24 +376,50 @@ class Pdo_{
         $stmt->execute();
         return $this->pdo->lastInsertId();
     }
-    public function updateMessage($id, $name, $type, $content) {
+    public function updateMessage($id, $name, $type, $content, $user_id) {
         $filtered_name = Filter::filter_name($name);
         $filtered_type = Filter::filter_type($type);
         $filtered_content = Filter::filter_general($content);
     
-        $sql = "UPDATE message SET name = ?, type = ?, message = ? WHERE id = ?";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(1, $filtered_name);
-        $stmt->bindParam(2, $filtered_type);
-        $stmt->bindParam(3, $filtered_content);
-        $stmt->bindParam(4, $id);
-        return $stmt->execute(); // Return success/failure
+        // Fetch the previous state of the record
+        $sql_fetch = "SELECT * FROM message WHERE id = ?";
+        $stmt_fetch = $this->pdo->prepare($sql_fetch);
+        $stmt_fetch->execute([$id]);
+        $previous_data = $stmt_fetch->fetch(PDO::FETCH_ASSOC);
+    
+        // Update the record
+        $sql_update = "UPDATE message SET name = ?, type = ?, message = ? WHERE id = ?";
+        try {
+            $stmt_update = $this->pdo->prepare($sql_update);
+            $stmt_update->bindParam(1, $filtered_name);
+            $stmt_update->bindParam(2, $filtered_type);
+            $stmt_update->bindParam(3, $filtered_content);
+            $stmt_update->bindParam(4, $id);
+            $stmt_update->execute();
+    
+            // Log user activity
+            $new_data = json_encode([
+                'name' => $filtered_name,
+                'type' => $filtered_type,
+                'message' => $filtered_content
+            ]);
+            $this->log_user_activity(
+                $user_id,
+                'UPDATE',
+                'message',
+                $id,
+                json_encode($previous_data),
+                $new_data
+            );
+    
+            return true;
+        } catch (PDOException $e) {
+            echo "Error updating message: " . $e->getMessage();
+            return false;
+        }
     }
     
 
-    public function __destruct() {
-        $this->pdo = null; // Close the PDO connection
-    }
     public function log_user_activity($user_id, $action_type, $table_name, $record_id, $previous_data = null, $new_data = null) {
         $sql = "INSERT INTO user_activity_log (user_id, action_type, table_name, record_id, previous_data, new_data) 
                 VALUES (?, ?, ?, ?, ?, ?)";
@@ -412,6 +442,43 @@ class Pdo_{
         }
         return $stmt->fetchAll(PDO::FETCH_OBJ); // Return results as an object
     }
+    public function get_message_history() {
+        $sql = "SELECT * FROM message_history ORDER BY message_id DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    public function revert_message($history_id) {
+        try {
+            // Fetch the record from the history table
+            $sql = "SELECT * FROM message_history WHERE history_id = ?";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$history_id]);
+            $history = $stmt->fetch(PDO::FETCH_OBJ);
     
-
+            if (!$history) {
+                throw new Exception("History record not found.");
+            }
+    
+            // Update the message table to match the historical record
+            $update_sql = "UPDATE message 
+                           SET name = ?, type = ?, message = ?, deleted = ? 
+                           WHERE id = ?";
+            $update_stmt = $this->pdo->prepare($update_sql);
+            $update_stmt->execute([
+                $history->name,
+                $history->type,
+                $history->message,
+                $history->deleted,
+                $history->message_id
+            ]);
+    
+            return true;
+        } catch (Exception $e) {
+            echo "Error reverting message: " . $e->getMessage();
+            return false;
+        }
+    }
+    
+    
 }

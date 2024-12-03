@@ -189,6 +189,55 @@ function display_user_activity($activities) {
     echo "</tbody></table>";
 }
 
+
+if (isset($_POST['see_message_log'])) {
+    $history_log = $pdo->get_message_history();
+}
+function display_message_history($history) {
+    echo "<table>
+            <thead>
+                <tr>
+                    <th>History ID</th>
+                    <th>Message ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Message</th>
+                    <th>Deleted</th>
+                    <th>User ID</th>
+                    <th>Action Date</th>
+                </tr>
+            </thead>
+            <tbody>";
+    foreach ($history as $record) {
+        echo "<tr>
+                <td>" . htmlspecialchars($record->history_id) . "</td>
+                <td>" . htmlspecialchars($record->message_id) . "</td>
+                <td>" . htmlspecialchars($record->name) . "</td>
+                <td>" . htmlspecialchars($record->type) . "</td>
+                <td>" . htmlspecialchars($record->message) . "</td>
+                <td>" . ($record->deleted ? 'Yes' : 'No') . "</td>
+                <td>" . htmlspecialchars($record->user_id) . "</td>
+                <td>" . htmlspecialchars($record->action_date) . "</td>
+            </tr>";
+    }
+    echo "</tbody></table>";
+}
+
+if (isset($_POST['revert_message'])) {
+    $history_id = intval($_POST['history_id']);
+    
+    // Call the revert function
+    if ($pdo->revert_message($history_id)) {
+        echo "<p>Message successfully reverted to the state from history ID: $history_id.</p>";
+    } else {
+        echo "<p>Error: Unable to revert message. Please check the history ID.</p>";
+    }
+}
+
+
+if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == @$_GET['from_user']){
+    $pdo->log_user_activity($_SESSION['user_id'], 'view', 'privileges', null);
+}
 ?>
 <html>
     <head>
@@ -235,6 +284,15 @@ function display_user_activity($activities) {
 <?php
 if ($_SESSION["role"] === 'moderator' || $_SESSION["role"] === 'admin') { ?>
     <main>
+    <?php
+    if (isset($_POST['revert_message'])) {
+        if ($pdo->revert_message($history_id)) {
+            echo "<p>Message successfully reverted to the state from history ID: $history_id.</p>";
+        } else {
+            echo "<p>Error: Unable to revert message. Please check the history ID.</p>";
+        }
+    }    
+    ?>
     <section>
         <table>
             <tr> 
@@ -287,6 +345,18 @@ if ($_SESSION["role"] === 'moderator' || $_SESSION["role"] === 'admin') { ?>
                 </td>
             </tr>
             <?php } ?>
+            <?php if ($_SESSION["role"] === 'admin') { ?>
+            <tr> 
+                <td> Displaying a message history </td> 
+                <td>
+                    <form method="post" action="privileges.php">
+                        <input type="submit" value="See" id="see" name="see_message_log">
+                    </form>
+                </td>
+            </tr>
+            <?php } ?>
+            
+
         </table>
     </section>
     <section id="display">
@@ -303,6 +373,24 @@ if ($_SESSION["role"] === 'moderator' || $_SESSION["role"] === 'admin') { ?>
             display_permissions_table_5($_SESSION["permissions"]);
         } else if (isset($_POST['see_activity_log'])) {
             display_user_activity($activities);
+        } else if (isset($_POST['see_message_log'])) {
+            if ($_SESSION["role"] === 'admin') { 
+                ?>
+                <table>
+                    <tr> 
+                        <td>Revert a message to a specific history state</td>
+                        <td>
+                            <form method="post" action="privileges.php">
+                                <input type="number" name="history_id" placeholder="History ID" required>
+                                <input type="submit" value="Revert" name="revert_message">
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+                <?php
+            }
+            display_message_history($history_log);
+
         } else {
             echo "<p>No permissions available to display.</p>";
         }

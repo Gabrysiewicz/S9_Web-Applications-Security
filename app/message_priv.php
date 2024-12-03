@@ -19,6 +19,7 @@ if( isset($_SESSION['logged_in'])){
 }else{
     echo "Logged in: null <br/>";
 }
+
 $pdo->refresh_session_expiration();
 $pdo->check_session_expiration();
 ?>

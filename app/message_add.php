@@ -17,6 +17,10 @@ if( isset($_SESSION['logged_in'])){
 }else{
     echo "Logged in: null <br/>";
 }
+
+if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == @$_GET['from_user']){
+    $pdo->log_user_activity($_SESSION['user_id'], 'view', 'message_add', null);
+}
 $pdo->refresh_session_expiration();
 $pdo->check_session_expiration();
 ?>
