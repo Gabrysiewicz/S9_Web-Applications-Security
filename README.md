@@ -7,9 +7,9 @@
 
 
 # Task 7.1.
-Add the functionality of recording user login and logout times to the application developed during previous labs.
+Add functionality to record user login and logout times in the application developed during previous labs.
 
-Structure of table responsible for holding loggin related data
+Structure of the table responsible for holding login-related data.
 ```
 +------------+------------------------+------+-----+-------------------+-------------------+
 | Field      | Type                   | Null | Key | Default           | Extra             |
@@ -22,7 +22,7 @@ Structure of table responsible for holding loggin related data
 +------------+------------------------+------+-----+-------------------+-------------------+
 ```
 
-Possible content
+Possible contents.
 ```
 +----+---------+------------+---------------------+------------+
 | id | user_id | event_type | event_time          | ip_address |
@@ -49,7 +49,7 @@ Possible content
 +----+---------+------------+---------------------+------------+
 ```
 
-Function in Pdo_.php responsible for recording user session log activity, its called during login or logut.
+Function in `Pdo_.php` responsible for recording user session log activity, called during login or logout.
 ```
 public function log_user_event($user_id, $event_type) {
         $ip_address = $_SERVER['REMOTE_ADDR'];
@@ -94,9 +94,9 @@ if (isset($_POST['logout'])) {
 ### Extend the application with the functionality of recording user activity.
 ### Register what data was modified && Record what data the user displayed (just write down the record numbers and table name)
 
-My Application stores history of what user views, add, edits and deletes in the same table `user_activity_log`
+<hr/>
+My application stores the history of what the user views, adds, edits, and deletes in the same table, `user_activity_log`.
 
-user_activity_log table structure
 ```
 +---------------+--------------------------------------+------+-----+-------------------+-------------------+
 | Field         | Type                                 | Null | Key | Default           | Extra             |
@@ -125,7 +125,7 @@ Example content
 +----+---------+-------------+------------+-----------+---------------+----------+---------------------+
 ```
 
-Function responsible for adding user activity to table
+Function responsible for adding user activity to the table.
 ```
 public function log_user_activity($user_id, $action_type, $table_name, $record_id, $previous_data = null, $new_data = null) {
     $sql = "INSERT INTO user_activity_log (user_id, action_type, table_name, record_id, previous_data, new_data) 
@@ -135,7 +135,7 @@ public function log_user_activity($user_id, $action_type, $table_name, $record_i
 }
 ```
 
-For an example log_user_activity is called during message activities such as add, update and delete of an message
+For example, `log_user_activity()` is called during message activities such as adding, updating, and deleting a message.
 ```
 // Adding a new message
 if (isset($_POST['add_message'])) {
@@ -192,7 +192,7 @@ if (isset($_GET['delete_message'])) {
 
 ### Add the ability to restore the previous version of a selected record – display the history of changes made for the selected record and enable the restoration of the selected version of data.
 
-To store updates for each record, I decided to create a table `message_history` and with the use of triggers, user actions will automaticlly be stored in new table.
+To store updates for each record, I decided to create a table `message_history`, and with the use of triggers, user actions will be automatically stored in the new table.
 
 Table for record history
 ```
@@ -240,7 +240,7 @@ END$$
 DELIMITER ;
 
 ```
-### View for messages, all publin and undeleted messages are displayed. Logged in as admin I will delete the last message
+### View for messages, all public and undeleted messages are displayed. Logged in as admin I will delete the last message
 
 <p align='center'>
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab7/img/Task7_2c.png" >
@@ -254,14 +254,14 @@ DELIMITER ;
 </p>
 <hr/>
 
-### Now in `privileges` view accessible only for admin I can see update in `message_history`. The form allows me to insert id of history that I want to revert for message. In this example I will use the last record which is 11 and will restore earlier deleted message
+### Now, in the privileges view, accessible only to admins, I can see updates in the message_history. The form allows me to insert the ID of the history record that I want to revert for a message. In this example, I will use the last record, which is 11, and restore an earlier deleted message.
 
 <p align='center'>
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab7/img/Task7_2e.png" >
 </p>
 <hr/>
 
-### After that I get message infroming me about the status of the operation. Obviously successfull.
+### After that, I get a message informing me about the status of the operation, which is obviously successful.
 
 <p align='center'>
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab7/img/Task7_2f.png" >
