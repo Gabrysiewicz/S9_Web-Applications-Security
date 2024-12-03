@@ -91,9 +91,8 @@ if (isset($_POST['logout'])) {
 
 
 # Task 7.2.
-### Extend the application with the functionality of recording user activity:
-### Register what data was modified
-### Record what data the user displayed (just write down the record numbers and table name)
+### Extend the application with the functionality of recording user activity.
+### Register what data was modified && Record what data the user displayed (just write down the record numbers and table name)
 
 My Application stores history of what user views, add, edits and deletes in the same table `user_activity_log`
 
@@ -183,12 +182,13 @@ if (isset($_GET['delete_message'])) {
 ### Add the ability to display user activity (only the administrator should have access to this function)
 
 <p align='center'>
-  <img src="#" >
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab7/img/Task7_2a.png" >
 </p>
-
+<hr/>
 <p align='center'>
-  <img src="#" >
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab7/img/Task7_2b.png" >
 </p>
+<hr/>
 
 ### Add the ability to restore the previous version of a selected record – display the history of changes made for the selected record and enable the restoration of the selected version of data.
 
@@ -240,23 +240,37 @@ END$$
 DELIMITER ;
 
 ```
+### View for messages, all publin and undeleted messages are displayed. Logged in as admin I will delete the last message
 
 <p align='center'>
-  <img src="#" >
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab7/img/Task7_2c.png" >
 </p>
+<hr/>
+
+### Message was successfully deleted
 
 <p align='center'>
-  <img src="#" >
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab7/img/Task7_2d.png" >
 </p>
+<hr/>
+
+### Now in `privileges` view accessible only for admin I can see update in `message_history`. The form allows me to insert id of history that I want to revert for message. In this example I will use the last record which is 11 and will restore earlier deleted message
 
 <p align='center'>
-  <img src="#" >
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab7/img/Task7_2e.png" >
 </p>
+<hr/>
+
+### After that I get message infroming me about the status of the operation. Obviously successfull.
 
 <p align='center'>
-  <img src="#" >
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab7/img/Task7_2f.png" >
 </p>
+<hr/>
+
+### In `Messages` view once again I can see the message that was deleted earlier but was restored by an admin
 
 <p align='center'>
-  <img src="#" >
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab7/img/Task7_2g.png" >
 </p>
+<hr/>
