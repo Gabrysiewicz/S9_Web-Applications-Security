@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit85103208e79dcb6fc5045db950d12623
+class ComposerStaticInit23dc795dbfe43cfb6ee0f52f8335d54e
 {
     public static $prefixLengthsPsr4 = array (
         'P' => 
@@ -15,6 +15,10 @@ class ComposerStaticInit85103208e79dcb6fc5045db950d12623
         'M' => 
         array (
             'MyCLabs\\Enum\\' => 13,
+        ),
+        'B' => 
+        array (
+            'Bluerhinos\\' => 11,
         ),
     );
 
@@ -31,6 +35,10 @@ class ComposerStaticInit85103208e79dcb6fc5045db950d12623
         array (
             0 => __DIR__ . '/..' . '/myclabs/php-enum/src',
         ),
+        'Bluerhinos\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/bluerhinos/phpmqtt',
+        ),
     );
 
     public static $classMap = array (
@@ -41,9 +49,9 @@ class ComposerStaticInit85103208e79dcb6fc5045db950d12623
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit85103208e79dcb6fc5045db950d12623::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit85103208e79dcb6fc5045db950d12623::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit85103208e79dcb6fc5045db950d12623::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit23dc795dbfe43cfb6ee0f52f8335d54e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit23dc795dbfe43cfb6ee0f52f8335d54e::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit23dc795dbfe43cfb6ee0f52f8335d54e::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # PHP Application Service
+  php:
+    image: php:8.2-apache               # Use PHP with Apache
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php-app             # Name of the PHP container
+    volumes:
+      - ./app:/var/www/html             # Map local app directory to the web server's root directory
+    ports:
+      - "8080:80"                       # Expose the container's web server on port 8080
+    depends_on:
+      - db                              # Make sure MySQL starts before PHP
+    networks:
+      - app-network
+    environment:
+      MYSQL_HOST: db                    # Set MySQL host for use in your app
+      MYSQL_DATABASE: lab8
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rootpass
+
+  # MySQL Database Service
+  db:
+    image: mysql:8.0                    # MySQL version 8.0
+    container_name: mysql-db            # Name of the MySQL container
+    restart: always                     # Ensure the MySQL container restarts if it fails
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass     # MySQL root password
+      MYSQL_DATABASE: lab8         # Initial database name
+      MYSQL_USER: root           # MySQL user
+      MYSQL_PASSWORD: rootpass       # MySQL user password
+    volumes:
+      - db_data:/var/lib/mysql          # Persist MySQL data between container restarts
+    networks:
+      - app-network
+
+# Named volume to persist data
+volumes:
+  db_data:
+
+# Custom network for communication between services
+networks:
+  app-network:
+    driver: bridge
