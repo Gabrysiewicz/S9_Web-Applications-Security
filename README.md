@@ -49,4 +49,97 @@ In second example the clients have `-c` option so persistant is now enabled, the
 # Task 10.2.
 ### Using MQTT communication, establish communication between two application modules. One module will retrieve messages from the user and send them to the MQTT broker. The second module will save these messages in the database.
 
+Once again I am using docker for apche-php and mysql-db. I also tried plenty of times adding mosquitto to this but it failed miserably. So mosquitto is just running in WSL while apache and database are in docker
+```
+version: '3.8'
 
+services:
+  # PHP Application Service
+  php:
+    image: php:8.2-apache               
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: php-app             
+    volumes:
+      - ./app:/var/www/html             
+    ports:
+      - "8080:80"                       
+    depends_on:
+      - db                              
+    networks:
+      - app-network
+    environment:
+      MYSQL_HOST: db                    
+      MYSQL_DATABASE: lab8
+      MYSQL_USER: root
+      MYSQL_PASSWORD: rootpass
+
+  # MySQL Database Service
+  db:
+    image: mysql:8.0                   
+    container_name: mysql-db            
+    restart: always                     
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass     
+      MYSQL_DATABASE: lab8         
+      MYSQL_USER: root           
+      MYSQL_PASSWORD: rootpass       
+    volumes:
+      - db_data:/var/lib/mysql          
+    networks:
+      - app-network
+
+# Named volume to persist data
+volumes:
+  db_data:
+
+# Custom network for communication between services
+networks:
+  app-network:
+    driver: bridge
+```
+
+```
+FROM php:8.2-apache
+
+# Install necessary packages and PHP extensions
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo pdo_mysql mysqli \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Enable mod_rewrite for Apache
+RUN a2enmod rewrite
+
+# Copy your application code to the container
+COPY ./app /var/www/html
+
+# Set the working directory
+WORKDIR /var/www/html
+```
+<hr/>
+<h3> I Have simple view for message form </h3>
+<p align='center'>
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab8/img/Task8.2b.png">
+</p>
+
+<hr/>
+<h3> After sending a message there is prompt informing user of the state </h3>
+<p align='center'>
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab8/img/Task8.2c.png">
+</p>
+
+<hr/>
+<h3> Now the most important thing. In the upper left we've got a terminal window with docer database, we can see table schema and message successfully saved to database. </h3>
+<h3> Upper right terminal shows running mosquitto server in WSL </h3>
+<h3> Lower left terminal window has started MQTT subscriber inside a docker container </h3>
+<h3> The lower right terminal window does nothing, but also wanted to participate in the process </h3>
+<p align='center'>
+  <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab8/img/Task8.2.png">
+</p>
