@@ -43,3 +43,8 @@ In first example the clients dont have `-c` option so persistant is disabled, th
 <p align='center'>
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab8/img/Task8.1a.png">
 </p>
+
+
+
+# Task 10.2.
+### Using MQTT communication, establish communication between two application modules. One module will retrieve messages from the user and send them to the MQTT broker. The second module will save these messages in the database.
