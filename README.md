@@ -136,7 +136,7 @@ WORKDIR /var/www/html
 </p>
 
 <hr/>
-<h3> Now the most important thing. In the upper left we've got a terminal window with docer database, we can see table schema and message successfully saved to database. </h3>
+<h3> At the upper left we've got a terminal window with docer database, we can see table schema and message successfully saved to database. </h3>
 <h3> Upper right terminal shows running mosquitto server in WSL </h3>
 <h3> Lower left terminal window has started MQTT subscriber inside a docker container </h3>
 <h3> The lower right terminal window does nothing, but also wanted to participate in the process </h3>
