@@ -2,19 +2,12 @@
   <tr> <td colspan='3' align='center' width='884px'> Web Applications Security </td> </tr>
   <tr> <td colspan="3" align='center'> <img src='https://github.com/Gabrysiewicz/Programowanie-aplikacji-w-chmurze-obliczeniowe/blob/main/logo_politechniki_lubelskiej.jpg' width="400px" height="400px"></td> </tr>
   <tr> <td> Kamil Gabrysiewicz </td> <td> Index: 95400 </td> <td> Grupa: 2.1 </td> </tr>  
-  <tr> <td> Wtorek 11:45-13:15 </td> <td> Semestr 2 </td> <td>Laboratorium 1</td></tr>  
+  <tr> <td> Wtorek 11:45-13:15 </td> <td> Semestr 2 </td> <td>Laboratorium 8</td></tr>  
 </table>
 
-# Laboratory List
-<ol>
-	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab1'> Laboratorium</a></li>
-	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab2'> Laboratorium</a></li>
-	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab3'> Laboratorium</a></li>
-	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab4'> Laboratorium</a></li>
-	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab5'> Laboratorium</a></li>
-	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab6'> Laboratorium</a></li>
-	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab7'> Laboratorium</a></li>
-	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab8'> Laboratorium</a></li>
-	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab9'> Laboratorium</a></li>
-	<li><a href='https://github.com/Gabrysiewicz/S9_Web-Applications-Security/tree/lab10'> Laboratorium</a></li>
-</ol>
+# Task 10.1.
+### Create two recipients and a sender. Post messages to the feed they subscribe to. 
+
+### Disable one recipient. Post some messages. Re-enable the second recipient. Repeat the exercise for different values of QOS (0,1,2). Determine the impact of QOS on message delivery.
+• Command 1.
+• Command 2
