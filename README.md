@@ -195,7 +195,7 @@ use PhpMqtt\Client\ConnectionSettings;
 use PDO;
 
 // MQTT broker settings
-$broker = getenv('MQTT_BROKER') ?: 'host.docker.internal'; // Connect to WSL's Mosquitto broker
+$broker = getenv('MQTT_BROKER') ?: 'host.docker.internal';
 $port = 1883;  // Default MQTT Port
 $clientId = 'phpSubscriberClient';
 
