@@ -274,3 +274,67 @@ DELIMITER ;
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab7/img/Task7_2g.png" >
 </p>
 <hr/>
+
+# Code Snippet
+
+The main logic in `Pdo_.php`:
+```
+  public function log_user_activity($user_id, $action_type, $table_name, $record_id, $previous_data = null, $new_data = null) {
+        $sql = "INSERT INTO user_activity_log (user_id, action_type, table_name, record_id, previous_data, new_data) 
+                VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$user_id, $action_type, $table_name, $record_id, $previous_data, $new_data]);
+    }
+
+    public function get_user_activity($user_id = null) {
+        $sql = "SELECT * FROM user_activity_log ORDER BY timestamp DESC";
+        if ($user_id) {
+            $sql = "SELECT * FROM user_activity_log WHERE user_id = ? ORDER BY timestamp DESC";
+        }
+        
+        $stmt = $this->pdo->prepare($sql);
+        if ($user_id) {
+            $stmt->execute([$user_id]);
+        } else {
+            $stmt->execute();
+        }
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    public function get_message_history() {
+        $sql = "SELECT * FROM message_history ORDER BY message_id DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
+    }
+    public function revert_message($history_id) {
+        try {
+            // Fetch the record from the history table
+            $sql = "SELECT * FROM message_history WHERE history_id = ?";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$history_id]);
+            $history = $stmt->fetch(PDO::FETCH_OBJ);
+    
+            if (!$history) {
+                throw new Exception("History record not found.");
+            }
+    
+            // Update the message table to match the historical record
+            $update_sql = "UPDATE message 
+                           SET name = ?, type = ?, message = ?, deleted = ? 
+                           WHERE id = ?";
+            $update_stmt = $this->pdo->prepare($update_sql);
+            $update_stmt->execute([
+                $history->name,
+                $history->type,
+                $history->message,
+                $history->deleted,
+                $history->message_id
+            ]);
+    
+            return true;
+        } catch (Exception $e) {
+            echo "Error reverting message: " . $e->getMessage();
+            return false;
+        }
+    }
+```
