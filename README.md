@@ -23,7 +23,8 @@ Attempt of deleteing message that doesn't belong to us will lead to message of "
 </p>
 
 <hr/>
-Attempt of accessing the view that isnt made for unprivileged, unlogged user will wont work and view won't be even rendered for attacker.
+Attempt of accessing the view that isnt made for unprivileged, unlogged user wont work and view won't be even rendered for attacker.
+As we can see only some undisabled warnings are returned in body tag
 <p align='center'>
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab6/img/Task6_1b.png">
 </p>
@@ -35,7 +36,7 @@ code there. Users with appropriate permissions and the message creator are to be
 edit messages.
 
 <hr/>
-<h3> Logging is a user "test" with role user" </h3>
+<h3> Logging in as user "test" with role user </h3>
 <p align='center'>
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab6/img/Task6_2a.png">
 </p>
@@ -83,7 +84,7 @@ edit messages.
 </p>
 
 <hr/>
-<h3> IN this example we can see how "test2" tries to access "My Messagess" view for "test" user, but because he isnt logged in as him, he sees just default "Messages.php" view that is available for all users </h3>
+<h3> In this example we can see how "test2" tries to access "My Messagess" view for "test" user, but because he isnt logged in as him, he sees just default "Messages.php" view that is available for all users </h3>
 <p align='center'>
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab6/img/Task6_2i.png">
 </p>
@@ -106,4 +107,87 @@ edit messages.
   <img src="https://github.com/Gabrysiewicz/S9_Web-Applications-Security/blob/lab6/img/Task6_2l.png">
 </p>
 
+<hr/>
 
+# Some Code snippets
+
+message_edit access control:
+```
+<?php
+    if ($_SESSION['role'] === 'moderator' || $_SESSION['role'] === 'admin' ||
+      @(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $_GET['owner'])) {
+?>
+<form method="post" action="messages.php">
+    /* SOME CODE */
+</form>
+<?php
+    }else{
+        echo "<h1 color='red'>Looks like you are not the owner of the post, so you cannot edit it. </h1>";
+    }
+?>
+```
+
+messages.php rendering content only for particular users:
+```
+if(isset($messages) && $messages != null) {
+        echo "<table>";
+        foreach ($messages as $msg):
+            echo "<tr>";
+            echo "<td>" . htmlspecialchars($msg->name) . "</td>";
+            echo "<td>" . $msg->message . "</td>";
+            // Show delete link only for moderators or admins
+            if ($_SESSION['role'] === 'moderator' || $_SESSION['role'] === 'admin' ||
+              @(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $_GET['from_user'])) {
+                echo "<td><a href='message_edit.php?id=" . htmlspecialchars($msg->id) .
+                      "&owner=".htmlspecialchars($msg->user_id)."'>Edit</a></td>";
+            }
+            // Show delete link only for moderators or admins
+            if ($_SESSION['role'] === 'moderator' || $_SESSION['role'] === 'admin' ||
+              @(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $_GET['from_user'])) {
+                echo "<td><a href='?delete_message=" . htmlspecialchars($msg->id) .
+                      "&owner=".htmlspecialchars($msg->user_id)."' style='color:red;'>Delete</a></td>";
+            }
+            echo "</tr>";
+        endforeach;
+        
+        echo "</table>";
+    }else{
+        echo "<h2> Nothing to display </h2>";
+    }
+```
+
+privileges.php render content only for particular users:
+```
+<body>
+<?php
+if ($_SESSION["role"] === 'moderator' || $_SESSION["role"] === 'admin') { ?>
+    <main>
+    <section>
+        /* SOME CODE */
+    </section>
+    <section id="display">
+    <?php 
+        if (isset($_POST['see_permissions_1'])) {
+            display_permissions_table_1($_SESSION["permissions"]);
+        } else if (isset($_POST['see_permissions_2'])) {
+            display_permissions_table_2($_SESSION["permissions"]);
+        } else if (isset($_POST['see_permissions_3'])) {
+            display_permissions_table_3($_SESSION["permissions"]);
+        } else if (isset($_POST['see_permissions_4'])) {
+            display_permissions_table_4($_SESSION["permissions"]);
+        } else if (isset($_POST['see_permissions_5'])) {
+            display_permissions_table_5($_SESSION["permissions"]);
+        } else {
+            echo "<p>No permissions available to display.</p>";
+        }
+
+    ?>
+    </section>
+
+    </main>
+    <?php
+        Page::display_navigation($_SESSION['role']);
+}
+?>
+</body>
+```
