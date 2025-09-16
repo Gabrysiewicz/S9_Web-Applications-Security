@@ -1,3 +1,10 @@
+# Lab Projects Repository
+
+This repository contains projects I developed as part of my coursework and laboratory exercises during my studies in Computer Science.  
+The goal of this repository is to showcase my practical experience, experimentation, and learning progress throughout my studies.
+
+Feel free to explore, reuse, or provide feedback on any of the projects!
+
 <table align='center'>
   <tr> <td colspan='3' align='center' width='884px'> Web Applications Security </td> </tr>
   <tr> <td colspan="3" align='center'> <img src='https://github.com/Gabrysiewicz/Programowanie-aplikacji-w-chmurze-obliczeniowe/blob/main/logo_politechniki_lubelskiej.jpg' width="400px" height="400px"></td> </tr>
